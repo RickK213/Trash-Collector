@@ -20,6 +20,10 @@ namespace TrashCollector.Models
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+        //This is how you add tables to your context...How can I add roles and users?
+        //public DbSet<Role> Role { get; set; }
+        //public DbSet<User> User { get; set; }
+
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
