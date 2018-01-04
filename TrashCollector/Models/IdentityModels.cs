@@ -16,6 +16,9 @@ namespace TrashCollector.Models
             // Add custom user claims here
             return userIdentity;
         }
+
+        //Extended Properties
+        //public int MyProperty { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
