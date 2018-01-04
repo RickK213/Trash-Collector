@@ -23,6 +23,7 @@ namespace TrashCollector.Controllers
         public ActionResult Index()
         {
             int profileId = Convert.ToInt32(User.Identity.GetProfileId());
+            //var userProfile = db.Profiles.Include(p => p.Addresses).Include(p => p.TrashCollections).First(p => p.ProfileId == profileId);
             var userProfile = db.Profiles.Include(p => p.Addresses).Include(p => p.TrashCollections).First(p => p.ProfileId == profileId);
             return View(userProfile);
         }

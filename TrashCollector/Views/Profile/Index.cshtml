@@ -8,11 +8,16 @@
 }
 
 <h2>Profile for @User.Identity.GetUserName()</h2>
-@if (Model.Addresses != null)
+@if (Model.Addresses.Count>0)
 {
-    foreach (var address in Model.Addresses)
-    {
+    <h3>My Addresses</h3>
+    var count = 1;
+foreach (var address in Model.Addresses)
+{
+        <h4>Address @count</h4>
         <p>@address.StreetOne</p>
+        <p>@address.StreetTwo</p>
+        <p>@address.City.Name, @address.State.Name @address.ZipCode.Number</p>
     }
 }
 <p>
