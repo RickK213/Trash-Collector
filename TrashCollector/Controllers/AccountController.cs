@@ -9,6 +9,9 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using TrashCollector.Models;
+using TrashCollector.Extensions;
+
+using System.Data;
 
 namespace TrashCollector.Controllers
 {
@@ -72,8 +75,8 @@ namespace TrashCollector.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return RedirectToAction("Index", "Profile", new { id = User.Identity.GetUserId() });
-                //return View(model);
+                //return RedirectToAction("Index", "Profile", new { id = User.Identity.GetUserId() });
+                return View(model);
             }
 
             // This doesn't count login failures towards account lockout   
@@ -155,7 +158,8 @@ namespace TrashCollector.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email };
+                int profileId = CreateEmptyProfile();
+                var user = new ApplicationUser { UserName = model.UserName, Email = model.Email, ProfileId = profileId };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -168,6 +172,7 @@ namespace TrashCollector.Controllers
                     // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");   
                     //Assign Role to user Here      
                     await this.UserManager.AddToRoleAsync(user.Id, model.UserRoles);
+                    CreateEmptyProfile();
                     //Ends Here    
                     return RedirectToAction("Index", "Profile");
                 }
@@ -178,6 +183,14 @@ namespace TrashCollector.Controllers
 
             // If we got this far, something failed, redisplay form   
             return View(model);
+        }
+
+        int CreateEmptyProfile()
+        {
+            Profile profile = new Profile();
+            ApplicationDbContext db = new ApplicationDbContext();
+            db.Profiles.Add(profile);
+            return (db.SaveChanges());
         }
 
         //

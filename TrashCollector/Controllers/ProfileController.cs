@@ -22,7 +22,9 @@ namespace TrashCollector.Controllers
         // GET: Profile
         public ActionResult Index()
         {
-            return View(db.UserProfiles.ToList());
+            int profileId = Convert.ToInt32(User.Identity.GetProfileId());
+            var userProfile = db.Profiles.Include(p => p.Addresses).Include(p => p.TrashCollections).First(p => p.ProfileId == profileId);
+            return View(userProfile);
         }
 
         // GET: Profile/Details
@@ -36,7 +38,7 @@ namespace TrashCollector.Controllers
             if ( User.Identity.HasProfile() )
             {
                 int profileId = Convert.ToInt32(User.Identity.GetProfileId());
-                profile = db.UserProfiles.Find(profileId);
+                profile = db.Profiles.Find(profileId);
             }
             else
             {
@@ -60,7 +62,7 @@ namespace TrashCollector.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.UserProfiles.Add(profile);
+                db.Profiles.Add(profile);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -75,7 +77,7 @@ namespace TrashCollector.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Profile profile = db.UserProfiles.Find(id);
+            Profile profile = db.Profiles.Find(id);
             if (profile == null)
             {
                 return HttpNotFound();
@@ -106,7 +108,7 @@ namespace TrashCollector.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Profile profile = db.UserProfiles.Find(id);
+            Profile profile = db.Profiles.Find(id);
             if (profile == null)
             {
                 return HttpNotFound();
@@ -119,8 +121,8 @@ namespace TrashCollector.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Profile profile = db.UserProfiles.Find(id);
-            db.UserProfiles.Remove(profile);
+            Profile profile = db.Profiles.Find(id);
+            db.Profiles.Remove(profile);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

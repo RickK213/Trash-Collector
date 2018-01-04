@@ -7,6 +7,8 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using TrashCollector.Models;
+using TrashCollector.Extensions;
+
 
 namespace TrashCollector.Controllers
 {
@@ -72,6 +74,15 @@ namespace TrashCollector.Controllers
 
 
                 db.Addresses.Add(address);
+                int addressId = db.SaveChanges();
+                Address insertedAddress = db.Addresses.First(a => a.AddressId == addressId);
+                int profileId = Convert.ToInt32(User.Identity.GetProfileId());
+                var profile = db.Profiles.First(p=> p.ProfileId == profileId);
+                if ( profile.Addresses == null )
+                {
+                    profile.Addresses = new List<Address>();
+                }
+                profile.Addresses.Add(insertedAddress);
                 db.SaveChanges();
                 return RedirectToAction("Index", "Profile");
             }

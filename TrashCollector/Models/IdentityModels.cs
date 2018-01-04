@@ -40,7 +40,7 @@ namespace TrashCollector.Models
             return new ApplicationDbContext();
         }
 
-        public System.Data.Entity.DbSet<TrashCollector.Models.Profile> UserProfiles { get; set; }
+        public System.Data.Entity.DbSet<TrashCollector.Models.Profile> Profiles { get; set; }
 
         public System.Data.Entity.DbSet<TrashCollector.Models.Address> Addresses { get; set; }
 
