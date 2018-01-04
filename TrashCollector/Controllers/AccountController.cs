@@ -72,7 +72,8 @@ namespace TrashCollector.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return View(model);
+                return RedirectToAction("Index", "Profile", new { id = User.Identity.GetUserId() });
+                //return View(model);
             }
 
             // This doesn't count login failures towards account lockout   
@@ -168,7 +169,7 @@ namespace TrashCollector.Controllers
                     //Assign Role to user Here      
                     await this.UserManager.AddToRoleAsync(user.Id, model.UserRoles);
                     //Ends Here    
-                    return RedirectToAction("Index", "Manage");
+                    return RedirectToAction("Index", "Profile");
                 }
                 ViewBag.Name = new SelectList(context.Roles.Where(u => !u.Name.Contains("Admin"))
                                           .ToList(), "Name", "Name");

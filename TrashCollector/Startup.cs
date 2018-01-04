@@ -29,7 +29,7 @@ namespace TrashCollector
             if (!roleManager.RoleExists("Admin"))
             {
 
-                // first we create Admin rool   
+                // first we create Admin role   
                 var role = new Microsoft.AspNet.Identity.EntityFramework.IdentityRole();
                 role.Name = "Admin";
                 roleManager.Create(role);
@@ -37,8 +37,8 @@ namespace TrashCollector
                 //Here we create a Admin super user who will maintain the website                  
 
                 var user = new ApplicationUser();
-                user.UserName = "rkippert";
-                user.Email = "rkippert@rk-trash-collection.com";
+                user.UserName = "admin";
+                user.Email = "admin@rk-trash-collection.com";
 
                 string userPWD = "Password123!";
 

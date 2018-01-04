@@ -14,19 +14,21 @@ namespace TrashCollector.Models
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
             var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
-            // Add custom user claims here
+            // Add custom user claims here => this.ProfileId is a value stored in database against the user
+            userIdentity.AddClaim(new Claim("ProfileId", this.ProfileId.ToString()));
             return userIdentity;
         }
 
         //Extended Properties
-        public int UserProfileId { get; set; }
-        public UserProfile UserProfile { get; set; }
+        public int? ProfileId { get; set; }
+        public Profile Profile { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         //This is how you add tables to your context
-        public DbSet<Address> Address { get; set; }
+        //public DbSet<Address> Address { get; set; }
+        //public DbSet<State> State { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
@@ -37,5 +39,15 @@ namespace TrashCollector.Models
         {
             return new ApplicationDbContext();
         }
+
+        public System.Data.Entity.DbSet<TrashCollector.Models.Profile> UserProfiles { get; set; }
+
+        public System.Data.Entity.DbSet<TrashCollector.Models.Address> Addresses { get; set; }
+
+        public System.Data.Entity.DbSet<TrashCollector.Models.City> Cities { get; set; }
+
+        public System.Data.Entity.DbSet<TrashCollector.Models.State> States { get; set; }
+
+        public System.Data.Entity.DbSet<TrashCollector.Models.ZipCode> ZipCodes { get; set; }
     }
 }

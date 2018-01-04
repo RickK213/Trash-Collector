@@ -41,16 +41,17 @@ namespace TrashCollector.Migrations
                     {
                         StateId = c.Int(nullable: false, identity: true),
                         Name = c.String(),
+                        Abbreviation = c.String(),
                     })
                 .PrimaryKey(t => t.StateId);
             
             CreateTable(
-                "dbo.UserProfiles",
+                "dbo.Profiles",
                 c => new
                     {
-                        UserProfileId = c.Int(nullable: false, identity: true),
+                        ProfileId = c.Int(nullable: false, identity: true),
                     })
-                .PrimaryKey(t => t.UserProfileId);
+                .PrimaryKey(t => t.ProfileId);
             
             CreateTable(
                 "dbo.TrashCollections",
@@ -105,7 +106,7 @@ namespace TrashCollector.Migrations
                 c => new
                     {
                         Id = c.String(nullable: false, maxLength: 128),
-                        UserProfileId = c.Int(nullable: false),
+                        ProfileId = c.Int(),
                         Email = c.String(maxLength: 256),
                         EmailConfirmed = c.Boolean(nullable: false),
                         PasswordHash = c.String(),
@@ -119,8 +120,8 @@ namespace TrashCollector.Migrations
                         UserName = c.String(nullable: false, maxLength: 256),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.UserProfiles", t => t.UserProfileId, cascadeDelete: true)
-                .Index(t => t.UserProfileId)
+                .ForeignKey("dbo.Profiles", t => t.ProfileId)
+                .Index(t => t.ProfileId)
                 .Index(t => t.UserName, unique: true, name: "UserNameIndex");
             
             CreateTable(
@@ -149,56 +150,56 @@ namespace TrashCollector.Migrations
                 .Index(t => t.UserId);
             
             CreateTable(
-                "dbo.UserProfileAddresses",
+                "dbo.ProfileAddresses",
                 c => new
                     {
-                        UserProfile_UserProfileId = c.Int(nullable: false),
+                        Profile_ProfileId = c.Int(nullable: false),
                         Address_AddressId = c.Int(nullable: false),
                     })
-                .PrimaryKey(t => new { t.UserProfile_UserProfileId, t.Address_AddressId })
-                .ForeignKey("dbo.UserProfiles", t => t.UserProfile_UserProfileId, cascadeDelete: true)
+                .PrimaryKey(t => new { t.Profile_ProfileId, t.Address_AddressId })
+                .ForeignKey("dbo.Profiles", t => t.Profile_ProfileId, cascadeDelete: true)
                 .ForeignKey("dbo.Addresses", t => t.Address_AddressId, cascadeDelete: true)
-                .Index(t => t.UserProfile_UserProfileId)
+                .Index(t => t.Profile_ProfileId)
                 .Index(t => t.Address_AddressId);
             
             CreateTable(
-                "dbo.TrashCollectionUserProfiles",
+                "dbo.TrashCollectionProfiles",
                 c => new
                     {
                         TrashCollection_TrashCollectionId = c.Int(nullable: false),
-                        UserProfile_UserProfileId = c.Int(nullable: false),
+                        Profile_ProfileId = c.Int(nullable: false),
                     })
-                .PrimaryKey(t => new { t.TrashCollection_TrashCollectionId, t.UserProfile_UserProfileId })
+                .PrimaryKey(t => new { t.TrashCollection_TrashCollectionId, t.Profile_ProfileId })
                 .ForeignKey("dbo.TrashCollections", t => t.TrashCollection_TrashCollectionId, cascadeDelete: true)
-                .ForeignKey("dbo.UserProfiles", t => t.UserProfile_UserProfileId, cascadeDelete: true)
+                .ForeignKey("dbo.Profiles", t => t.Profile_ProfileId, cascadeDelete: true)
                 .Index(t => t.TrashCollection_TrashCollectionId)
-                .Index(t => t.UserProfile_UserProfileId);
+                .Index(t => t.Profile_ProfileId);
             
         }
         
         public override void Down()
         {
-            DropForeignKey("dbo.AspNetUsers", "UserProfileId", "dbo.UserProfiles");
             DropForeignKey("dbo.AspNetUserRoles", "UserId", "dbo.AspNetUsers");
+            DropForeignKey("dbo.AspNetUsers", "ProfileId", "dbo.Profiles");
             DropForeignKey("dbo.AspNetUserLogins", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserRoles", "RoleId", "dbo.AspNetRoles");
             DropForeignKey("dbo.Addresses", "ZipCodeId", "dbo.ZipCodes");
-            DropForeignKey("dbo.TrashCollectionUserProfiles", "UserProfile_UserProfileId", "dbo.UserProfiles");
-            DropForeignKey("dbo.TrashCollectionUserProfiles", "TrashCollection_TrashCollectionId", "dbo.TrashCollections");
+            DropForeignKey("dbo.TrashCollectionProfiles", "Profile_ProfileId", "dbo.Profiles");
+            DropForeignKey("dbo.TrashCollectionProfiles", "TrashCollection_TrashCollectionId", "dbo.TrashCollections");
             DropForeignKey("dbo.TrashCollections", "AddressId", "dbo.Addresses");
-            DropForeignKey("dbo.UserProfileAddresses", "Address_AddressId", "dbo.Addresses");
-            DropForeignKey("dbo.UserProfileAddresses", "UserProfile_UserProfileId", "dbo.UserProfiles");
+            DropForeignKey("dbo.ProfileAddresses", "Address_AddressId", "dbo.Addresses");
+            DropForeignKey("dbo.ProfileAddresses", "Profile_ProfileId", "dbo.Profiles");
             DropForeignKey("dbo.Addresses", "StateId", "dbo.States");
             DropForeignKey("dbo.Addresses", "CityId", "dbo.Cities");
-            DropIndex("dbo.TrashCollectionUserProfiles", new[] { "UserProfile_UserProfileId" });
-            DropIndex("dbo.TrashCollectionUserProfiles", new[] { "TrashCollection_TrashCollectionId" });
-            DropIndex("dbo.UserProfileAddresses", new[] { "Address_AddressId" });
-            DropIndex("dbo.UserProfileAddresses", new[] { "UserProfile_UserProfileId" });
+            DropIndex("dbo.TrashCollectionProfiles", new[] { "Profile_ProfileId" });
+            DropIndex("dbo.TrashCollectionProfiles", new[] { "TrashCollection_TrashCollectionId" });
+            DropIndex("dbo.ProfileAddresses", new[] { "Address_AddressId" });
+            DropIndex("dbo.ProfileAddresses", new[] { "Profile_ProfileId" });
             DropIndex("dbo.AspNetUserLogins", new[] { "UserId" });
             DropIndex("dbo.AspNetUserClaims", new[] { "UserId" });
             DropIndex("dbo.AspNetUsers", "UserNameIndex");
-            DropIndex("dbo.AspNetUsers", new[] { "UserProfileId" });
+            DropIndex("dbo.AspNetUsers", new[] { "ProfileId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "RoleId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "UserId" });
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");
@@ -206,8 +207,8 @@ namespace TrashCollector.Migrations
             DropIndex("dbo.Addresses", new[] { "ZipCodeId" });
             DropIndex("dbo.Addresses", new[] { "StateId" });
             DropIndex("dbo.Addresses", new[] { "CityId" });
-            DropTable("dbo.TrashCollectionUserProfiles");
-            DropTable("dbo.UserProfileAddresses");
+            DropTable("dbo.TrashCollectionProfiles");
+            DropTable("dbo.ProfileAddresses");
             DropTable("dbo.AspNetUserLogins");
             DropTable("dbo.AspNetUserClaims");
             DropTable("dbo.AspNetUsers");
@@ -215,7 +216,7 @@ namespace TrashCollector.Migrations
             DropTable("dbo.AspNetRoles");
             DropTable("dbo.ZipCodes");
             DropTable("dbo.TrashCollections");
-            DropTable("dbo.UserProfiles");
+            DropTable("dbo.Profiles");
             DropTable("dbo.States");
             DropTable("dbo.Cities");
             DropTable("dbo.Addresses");

@@ -15,7 +15,7 @@ namespace TrashCollector.Models
         public Address Address { get; set; }
         public int AddressId { get; set; }
 
-        public ICollection<UserProfile> UserProfiles { get; set; }
+        public ICollection<Profile> UserProfiles { get; set; }
 
     }
 }

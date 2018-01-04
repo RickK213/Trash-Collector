@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
 
@@ -8,6 +9,7 @@ namespace TrashCollector.Models
     public class Address
     {
         public int AddressId { get; set; }
+        //[Display(Name = "Date of Birth")]
         public string StreetOne { get; set; }
         public string StreetTwo { get; set; }
 
@@ -20,6 +22,6 @@ namespace TrashCollector.Models
         public ZipCode ZipCode { get; set; }
         public int ZipCodeId { get; set; }
 
-        public ICollection<UserProfile> UserProfiles { get; set; }
+        public ICollection<Profile> UserProfiles { get; set; }
     }
 }
