@@ -39,9 +39,12 @@ namespace TrashCollector.Controllers
         // GET: Address/Create
         public ActionResult Create()
         {
-            ViewBag.CityId = new SelectList(db.Cities, "CityId", "Name");
-            ViewBag.StateId = new SelectList(db.States, "StateId", "Name");
-            ViewBag.ZipCodeId = new SelectList(db.ZipCodes, "ZipCodeId", "Number");
+            if ( !User.Identity.IsAuthenticated )
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            ViewBag.StateId = new SelectList(db.States, "StateId", "Abbreviation");
             return View();
         }
 
@@ -50,19 +53,64 @@ namespace TrashCollector.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "AddressId,StreetOne,StreetTwo,CityId,StateId,ZipCodeId")] Address address)
+        //public ActionResult Create([Bind(Include = "AddressId,StreetOne,StreetTwo,City,State,ZipCode")] Address address)
+        public ActionResult Create(string StreetOne, string StreetTwo, string City_Name, string StateId, string ZipCode_Number)
         {
-            if (ModelState.IsValid)
+            if (!User.Identity.IsAuthenticated)
             {
-                db.Addresses.Add(address);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                return RedirectToAction("Login", "Account");
             }
 
-            ViewBag.CityId = new SelectList(db.Cities, "CityId", "Name", address.CityId);
-            ViewBag.StateId = new SelectList(db.States, "StateId", "Name", address.StateId);
-            ViewBag.ZipCodeId = new SelectList(db.ZipCodes, "ZipCodeId", "Number", address.ZipCodeId);
-            return View(address);
+            if (ModelState.IsValid)
+            {
+                Address address = new Address();
+                address.StreetOne = StreetOne;
+                address.StreetTwo = StreetTwo;
+                address.CityId = GetCityID(City_Name);
+                address.StateId = GetStateID(StateId);
+                address.ZipCodeId = GetZipCodeID(ZipCode_Number);
+
+
+                db.Addresses.Add(address);
+                db.SaveChanges();
+                return RedirectToAction("Index", "Profile");
+            }
+
+            ViewBag.State = new SelectList(db.States, "StateId", "Abbreviation");
+            return View();
+        }
+
+        private int GetStateID(string StateId)
+        {
+            int stateIdNumber = Convert.ToInt32(StateId);
+            var stateFound = db.States.First(s => s.StateId == stateIdNumber);
+            return stateFound.StateId;
+        }
+
+        private int GetZipCodeID(string ZipCode_Number)
+        {
+            if (db.ZipCodes.Any(z => z.Number == ZipCode_Number))
+            {
+                var zipCodeFound = db.ZipCodes.First(z => z.Number == ZipCode_Number);
+                return zipCodeFound.ZipCodeId;
+            }
+            ZipCode zipCode = new ZipCode();
+            zipCode.Number = ZipCode_Number;
+            db.ZipCodes.Add(zipCode);
+            return db.SaveChanges();
+        }
+
+        private int GetCityID(string City_Name)
+        {
+            if (db.Cities.Any(c => c.Name == City_Name.ToLower()))
+            {
+                var cityFound = db.Cities.First(c => c.Name == City_Name);
+                return cityFound.CityId;
+            }
+            City city = new City();
+            city.Name = City_Name.ToLower();
+            db.Cities.Add(city);
+            return db.SaveChanges();
         }
 
         // GET: Address/Edit/5

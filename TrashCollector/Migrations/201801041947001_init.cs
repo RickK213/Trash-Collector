@@ -74,7 +74,6 @@ namespace TrashCollector.Migrations
                     {
                         ZipCodeId = c.Int(nullable: false, identity: true),
                         Number = c.String(),
-                        FourDigit = c.String(),
                     })
                 .PrimaryKey(t => t.ZipCodeId);
             

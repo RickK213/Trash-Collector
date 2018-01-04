@@ -9,6 +9,5 @@ namespace TrashCollector.Models
     {
         public int ZipCodeId { get; set; }
         public string Number { get; set; }
-        public string FourDigit { get; set; }
     }
 }
