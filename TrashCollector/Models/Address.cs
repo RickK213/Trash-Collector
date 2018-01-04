@@ -19,5 +19,7 @@ namespace TrashCollector.Models
 
         public ZipCode ZipCode { get; set; }
         public int ZipCodeId { get; set; }
+
+        public ICollection<UserProfile> UserProfiles { get; set; }
     }
 }

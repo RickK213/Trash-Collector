@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System.Collections.Generic;
 
 namespace TrashCollector.Models
 {
@@ -18,14 +19,14 @@ namespace TrashCollector.Models
         }
 
         //Extended Properties
-        //public int MyProperty { get; set; }
+        public int UserProfileId { get; set; }
+        public UserProfile UserProfile { get; set; }
     }
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-        //This is how you add tables to your context...How can I add roles and users?
-        //public DbSet<Role> Role { get; set; }
-        //public DbSet<User> User { get; set; }
+        //This is how you add tables to your context
+        public DbSet<Address> Address { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
