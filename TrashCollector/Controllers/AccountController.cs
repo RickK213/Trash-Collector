@@ -191,7 +191,8 @@ namespace TrashCollector.Controllers
             Profile profile = new Profile();
             ApplicationDbContext db = new ApplicationDbContext();
             db.Profiles.Add(profile);
-            return (db.SaveChanges());
+            db.SaveChanges();
+            return profile.ProfileId;
         }
 
         //

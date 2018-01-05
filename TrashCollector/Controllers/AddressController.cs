@@ -105,8 +105,7 @@ namespace TrashCollector.Controllers
                 return new Address();
             }
             int trashCollectionId = CreateEmptyTrashCollection();
-            Address address = null;
-            address = new Address();
+            Address address = new Address();
             address.StreetOne = StreetOne;
             address.StreetTwo = StreetTwo;
             address.CityId = GetCityID(City_Name);
@@ -124,7 +123,8 @@ namespace TrashCollector.Controllers
             TrashCollection trashCollection = new TrashCollection();
             ApplicationDbContext db = new ApplicationDbContext();
             db.TrashCollections.Add(trashCollection);
-            return (db.SaveChanges());
+            db.SaveChanges();
+            return trashCollection.TrashCollectionId;
         }
 
         private int GetStateID(string StateId)
@@ -144,7 +144,8 @@ namespace TrashCollector.Controllers
             ZipCode zipCode = new ZipCode();
             zipCode.Number = ZipCode_Number;
             db.ZipCodes.Add(zipCode);
-            return db.SaveChanges();
+            db.SaveChanges();
+            return zipCode.ZipCodeId;
         }
 
         private int GetCityID(string City_Name)
@@ -158,7 +159,8 @@ namespace TrashCollector.Controllers
             string formattedName = char.ToUpper(City_Name[0]) + City_Name.Substring(1).ToLower();
             city.Name = formattedName;
             db.Cities.Add(city);
-            return db.SaveChanges();
+            db.SaveChanges();
+            return city.CityId;
         }
 
         // GET: Address/Edit/5
@@ -233,20 +235,38 @@ namespace TrashCollector.Controllers
             base.Dispose(disposing);
         }
 
-        public ActionResult ScheduleCollection(int addressId)
+        //GET: Address/ScheduleCollection/id
+        public ActionResult ScheduleCollection(int? addressId)
         {
-            if ( !(addressId > 0) )
+            if (!(addressId > 0))
             {
                 return HttpNotFound();
             }
-            var address = db.Addresses.Include(a => a.City).Include(a => a.State).Include(a => a.ZipCode).First(a => a.AddressId == addressId);
+            var address = db.Addresses.Include(a => a.City).Include(a => a.State).Include(a => a.ZipCode).Include(a => a.TrashCollection).First(a => a.AddressId == addressId);
             return View(address);
         }
 
-        public ActionResult EditCollection(int addressId)
+        //POST: Address/ScheduleCollection/id
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public ActionResult ScheduleCollection([Bind(Include = "AddressId,StreetOne,StreetTwo,CityId,StateId,ZipCodeId")] Address address)
+        public ActionResult ScheduleCollection( int? addressId, string PickUpDay, DateTime? StartDate, DateTime? VacationStartDate, DateTime? VacationEndDate )
         {
-            return Content("Edit a trash collection! Address Id: " + addressId);
-            //return View();
+            if (!(addressId > 0))
+            {
+                return HttpNotFound();
+            }
+            //string content = String.Format("{0}, {1}, {2}, {3}, {4}", addressId, PickUpDay, StartDate, VacationStartDate, VacationEndDate);
+            //return Content(content);
+            var address = db.Addresses.Include(a => a.TrashCollection).First(a => a.AddressId == addressId);
+            address.TrashCollection.PickUpDay = PickUpDay;
+            address.TrashCollection.StartDate = StartDate;
+            address.TrashCollection.VacationStartDate = VacationStartDate;
+            address.TrashCollection.VacationEndDate = VacationEndDate;
+            db.SaveChanges();
+
+            return RedirectToAction("Addresses", "Profile");
+
         }
 
     }

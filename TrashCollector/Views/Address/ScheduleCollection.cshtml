@@ -11,10 +11,12 @@
 <div class="row">
     @using (Html.BeginForm())
     {
+        <input type="hidden" name="addressId" value=@Model.AddressId>
         <div class="form-horizontal">
             <div class="form-group">
                 <label class="control-label col-md-2">Address</label>
                 <div class="col-md-10">
+                    <div id="map" style="width: 300px; height: 300px;"></div>
                     @Model.StreetOne<br />
                     @Model.StreetTwo<br />
                     @Model.City.Name, @Model.State.Abbreviation @Model.ZipCode.Number
@@ -23,7 +25,7 @@
             <div class="form-group">
                 <label class="control-label col-md-2">Day Of The Week</label>
                 <div class="col-md-10">
-                    <select class="form-control">
+                    <select class="form-control" name="PickUpDay" id="PickUpDay">
                         <option>@DayOfWeek.Monday</option>
                         <option>@DayOfWeek.Tuesday</option>
                         <option>@DayOfWeek.Wednesday</option>
@@ -32,11 +34,119 @@
                     </select>
                 </div>
             </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Start Date</label>
+                <div class="col-md-10">
+                    <div class="input-group date">
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                        <input type="text" class="form-control" name="StartDate" id="StartDate" placeholder="MM/DD/YYYY" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Vacation Start Date</label>
+                <div class="col-md-10">
+                    <div class="input-group date">
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                        <input type="text" class="form-control" name="VacationStartDate" id="VacationStartDate" placeholder="MM/DD/YYYY" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label col-md-2">Vacation End Date</label>
+                <div class="col-md-10">
+                    <div class="input-group date">
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                        <input type="text" class="form-control"  name="VacationEndDate" id="VacationEndDate" placeholder="MM/DD/YYYY" />
+                    </div>
+                </div>
+            </div>
+
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
                     <input type="submit" value="Save" class="btn btn-primary" />
                 </div>
             </div>
         </div>
-    }
+}
 </div>
+@{ 
+    //geocoding
+    using (WebClient wc = new WebClient())
+    {
+        var json = wc.DownloadString(@"https://maps.googleapis.com/maps/api/geocode/json?address=2573+N+65th+St+Wauwatosa+WI&key=AIzaSyD3F02Dr7BSQRR48YgU8akdwdR-9FsXp3w");
+        @json
+    }
+}
+
+@section Scripts {
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3F02Dr7BSQRR48YgU8akdwdR-9FsXp3w"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            //Prepopulate pick up day
+            let pickUpDay = "";
+            @{
+                if (Model.TrashCollection != null)
+                {
+                    @:pickUpDay = "@Model.TrashCollection.PickUpDay";
+                                                                }
+            }
+            $('#PickUpDay > option').each(function () {
+                if ($(this).text() === pickUpDay) {
+                    $(this).attr("selected", "selected");
+                }
+            });
+
+            //prepopulate start up date
+            @if ( Model.TrashCollection.StartDate !=null )
+            {
+                @:$("#StartDate").val("@Model.TrashCollection.StartDate");
+                                    }
+
+            //prepopulate vacation start date
+            @if ( Model.TrashCollection.VacationStartDate !=null )
+            {
+                @:$("#VacationStartDate").val("@Model.TrashCollection.VacationStartDate");
+                                    }
+
+            //prepopulate vacation end date
+            @if ( Model.TrashCollection.VacationEndDate !=null )
+            {
+                @:$("#VacationEndDate").val("@Model.TrashCollection.VacationEndDate");
+                                    }
+
+            //Setup all datetimepickers
+            $(function () {
+                $('.date').datetimepicker({
+                    format: 'MM/DD/YYYY'
+                });
+            });
+
+            //Google maps api test
+            //Key: AIzaSyD3F02Dr7BSQRR48YgU8akdwdR-9FsXp3w
+            function initMap() {
+                var map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 14,
+                    center: { lat: 43.0673580302915, lng: -87.99250196970848 }
+                });
+                var marker = new google.maps.Marker({
+                    position: { lat: 43.0673580302915, lng: -87.99250196970848 },
+                    map: map
+                });
+            }
+            initMap();
+
+        });
+    </script>
+
+}

@@ -21,7 +21,7 @@
                     @if (address.TrashCollection.StartDate != null)
                     {
                         <p>
-                            @Html.ActionLink("Modify Trash Collection", "EditCollection", "Address", routeValues: new { addressId = address.AddressId }, htmlAttributes: new { title = "Modify Trash Collection", @class = "btn btn-info btn-xs" })
+                            @Html.ActionLink("Modify Trash Collection", "ScheduleCollection", "Address", routeValues: new { addressId = address.AddressId }, htmlAttributes: new { title = "Modify Trash Collection", @class = "btn btn-info btn-xs" })
                         </p>
                     }
                     else
