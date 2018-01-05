@@ -41,12 +41,22 @@ namespace TrashCollector.Controllers
         // GET: Address/Create
         public ActionResult Create()
         {
-            if ( !User.Identity.IsAuthenticated )
+            if (!User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Login", "Account");
             }
 
             ViewBag.StateId = new SelectList(db.States, "StateId", "Abbreviation");
+            return View();
+        }
+
+        public ActionResult DuplicateAddress()
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             return View();
         }
 
@@ -65,18 +75,12 @@ namespace TrashCollector.Controllers
 
             if (ModelState.IsValid)
             {
-                Address address = null;
-                address = new Address();
-                address.StreetOne = StreetOne;
-                address.StreetTwo = StreetTwo;
-                address.CityId = GetCityID(City_Name);
-                address.StateId = GetStateID(StateId);
-                address.ZipCodeId = GetZipCodeID(ZipCode_Number);
+                Address address = GetAddress(StreetOne, StreetTwo, City_Name, StateId, ZipCode_Number);
+                if(address.AddressId == 0)
+                {
+                    return RedirectToAction("DuplicateAddress","Address");
+                }
 
-                db.Addresses.Add(address);
-                db.SaveChanges();
-                //Address insertedAddress = null;
-                //insertedAddress = db.Addresses.First(a => a.AddressId == addressId);
                 int profileId = Convert.ToInt32(User.Identity.GetProfileId());
                 var profile = db.Profiles.First(p=> p.ProfileId == profileId);
                 if ( profile.Addresses == null )
@@ -85,11 +89,42 @@ namespace TrashCollector.Controllers
                 }
                 profile.Addresses.Add(address);
                 db.SaveChanges();
-                return RedirectToAction("Index", "Profile");
+                return RedirectToAction("Addresses", "Profile");
             }
 
             ViewBag.State = new SelectList(db.States, "StateId", "Abbreviation");
             return View();
+        }
+
+        private Address GetAddress(string StreetOne, string StreetTwo, string City_Name, string StateId, string ZipCode_Number)
+        {
+            int stateIdNumber = Convert.ToInt32(StateId);
+            if (db.Addresses.Any(a => a.StreetOne == StreetOne && a.StreetTwo == StreetTwo && a.City.Name == City_Name && a.State.StateId == stateIdNumber && a.ZipCode.Number == ZipCode_Number))
+            {
+                var addressFound = db.Addresses.First(a => a.StreetOne == StreetOne && a.StreetTwo == StreetTwo && a.City.Name == City_Name && a.State.StateId == stateIdNumber && a.ZipCode.Number == ZipCode_Number);
+                return new Address();
+            }
+            int trashCollectionId = CreateEmptyTrashCollection();
+            Address address = null;
+            address = new Address();
+            address.StreetOne = StreetOne;
+            address.StreetTwo = StreetTwo;
+            address.CityId = GetCityID(City_Name);
+            address.StateId = GetStateID(StateId);
+            address.ZipCodeId = GetZipCodeID(ZipCode_Number);
+            address.TrashCollectionId = trashCollectionId;
+            db.Addresses.Add(address);
+            db.SaveChanges();
+            
+            return address;
+        }
+
+        int CreateEmptyTrashCollection()
+        {
+            TrashCollection trashCollection = new TrashCollection();
+            ApplicationDbContext db = new ApplicationDbContext();
+            db.TrashCollections.Add(trashCollection);
+            return (db.SaveChanges());
         }
 
         private int GetStateID(string StateId)
@@ -197,5 +232,22 @@ namespace TrashCollector.Controllers
             }
             base.Dispose(disposing);
         }
+
+        public ActionResult ScheduleCollection(int addressId)
+        {
+            if ( !(addressId > 0) )
+            {
+                return HttpNotFound();
+            }
+            var address = db.Addresses.Include(a => a.City).Include(a => a.State).Include(a => a.ZipCode).First(a => a.AddressId == addressId);
+            return View(address);
+        }
+
+        public ActionResult EditCollection(int addressId)
+        {
+            return Content("Edit a trash collection! Address Id: " + addressId);
+            //return View();
+        }
+
     }
 }

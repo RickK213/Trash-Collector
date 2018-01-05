@@ -44,6 +44,8 @@ namespace TrashCollector.Models
 
         public System.Data.Entity.DbSet<TrashCollector.Models.Address> Addresses { get; set; }
 
+        public System.Data.Entity.DbSet<TrashCollector.Models.TrashCollection> TrashCollections { get; set; }
+
         public System.Data.Entity.DbSet<TrashCollector.Models.City> Cities { get; set; }
 
         public System.Data.Entity.DbSet<TrashCollector.Models.State> States { get; set; }

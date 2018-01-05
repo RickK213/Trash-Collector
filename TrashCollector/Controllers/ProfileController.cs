@@ -29,7 +29,7 @@ namespace TrashCollector.Controllers
                 .Include("Addresses.City")
                 .Include("Addresses.State")
                 .Include("Addresses.ZipCode")
-                .Include(p => p.TrashCollections)
+                .Include("Addresses.TrashCollection")
                 .First(p => p.ProfileId == profileId);
             return View(userProfile);
         }
@@ -37,21 +37,33 @@ namespace TrashCollector.Controllers
         // GET: Profile/Details
         public ActionResult Details()
         {
+            //This is where the user's account information will go.
+            return View();
+        }
+
+        // GET: Profile/Addresses
+        public ActionResult Addresses()
+        {
             if (!User.Identity.IsAuthenticated)
             {
-                return HttpNotFound();
+                return RedirectToAction("Login", "Account");
             }
 
-            if ( User.Identity.HasProfile() )
-            {
-                int profileId = Convert.ToInt32(User.Identity.GetProfileId());
-                profile = db.Profiles.Find(profileId);
-            }
-            else
-            {
-                profile = null;
-            }
-            return View(profile);
+            int profileId = Convert.ToInt32(User.Identity.GetProfileId());
+            var userProfile = db.Profiles
+                .Include(p => p.Addresses)
+                .Include("Addresses.City")
+                .Include("Addresses.State")
+                .Include("Addresses.ZipCode")
+                .Include("Addresses.TrashCollection")
+                .First(p => p.ProfileId == profileId);
+
+            //test data
+            //StringBuilder testData = new StringBuilder();
+            //end of test data
+
+            //return Content( userProfile.ToString() );
+            return View(userProfile);
         }
 
         // GET: Profile/Create

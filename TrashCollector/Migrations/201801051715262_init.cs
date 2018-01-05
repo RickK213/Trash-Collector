@@ -17,14 +17,20 @@ namespace TrashCollector.Migrations
                         CityId = c.Int(nullable: false),
                         StateId = c.Int(nullable: false),
                         ZipCodeId = c.Int(nullable: false),
+                        TrashCollectionId = c.Int(),
+                        Profile_ProfileId = c.Int(),
                     })
                 .PrimaryKey(t => t.AddressId)
                 .ForeignKey("dbo.Cities", t => t.CityId, cascadeDelete: true)
                 .ForeignKey("dbo.States", t => t.StateId, cascadeDelete: true)
+                .ForeignKey("dbo.TrashCollections", t => t.TrashCollectionId)
                 .ForeignKey("dbo.ZipCodes", t => t.ZipCodeId, cascadeDelete: true)
+                .ForeignKey("dbo.Profiles", t => t.Profile_ProfileId)
                 .Index(t => t.CityId)
                 .Index(t => t.StateId)
-                .Index(t => t.ZipCodeId);
+                .Index(t => t.ZipCodeId)
+                .Index(t => t.TrashCollectionId)
+                .Index(t => t.Profile_ProfileId);
             
             CreateTable(
                 "dbo.Cities",
@@ -46,27 +52,16 @@ namespace TrashCollector.Migrations
                 .PrimaryKey(t => t.StateId);
             
             CreateTable(
-                "dbo.Profiles",
-                c => new
-                    {
-                        ProfileId = c.Int(nullable: false, identity: true),
-                    })
-                .PrimaryKey(t => t.ProfileId);
-            
-            CreateTable(
                 "dbo.TrashCollections",
                 c => new
                     {
                         TrashCollectionId = c.Int(nullable: false, identity: true),
                         PickUpDay = c.String(),
-                        StartDate = c.DateTime(nullable: false),
-                        VacationStartDate = c.DateTime(nullable: false),
-                        VacationEndDate = c.DateTime(nullable: false),
-                        AddressId = c.Int(nullable: false),
+                        StartDate = c.DateTime(),
+                        VacationStartDate = c.DateTime(),
+                        VacationEndDate = c.DateTime(),
                     })
-                .PrimaryKey(t => t.TrashCollectionId)
-                .ForeignKey("dbo.Addresses", t => t.AddressId, cascadeDelete: true)
-                .Index(t => t.AddressId);
+                .PrimaryKey(t => t.TrashCollectionId);
             
             CreateTable(
                 "dbo.ZipCodes",
@@ -76,6 +71,14 @@ namespace TrashCollector.Migrations
                         Number = c.String(nullable: false),
                     })
                 .PrimaryKey(t => t.ZipCodeId);
+            
+            CreateTable(
+                "dbo.Profiles",
+                c => new
+                    {
+                        ProfileId = c.Int(nullable: false, identity: true),
+                    })
+                .PrimaryKey(t => t.ProfileId);
             
             CreateTable(
                 "dbo.AspNetRoles",
@@ -148,32 +151,6 @@ namespace TrashCollector.Migrations
                 .ForeignKey("dbo.AspNetUsers", t => t.UserId, cascadeDelete: true)
                 .Index(t => t.UserId);
             
-            CreateTable(
-                "dbo.ProfileAddresses",
-                c => new
-                    {
-                        Profile_ProfileId = c.Int(nullable: false),
-                        Address_AddressId = c.Int(nullable: false),
-                    })
-                .PrimaryKey(t => new { t.Profile_ProfileId, t.Address_AddressId })
-                .ForeignKey("dbo.Profiles", t => t.Profile_ProfileId, cascadeDelete: true)
-                .ForeignKey("dbo.Addresses", t => t.Address_AddressId, cascadeDelete: true)
-                .Index(t => t.Profile_ProfileId)
-                .Index(t => t.Address_AddressId);
-            
-            CreateTable(
-                "dbo.TrashCollectionProfiles",
-                c => new
-                    {
-                        TrashCollection_TrashCollectionId = c.Int(nullable: false),
-                        Profile_ProfileId = c.Int(nullable: false),
-                    })
-                .PrimaryKey(t => new { t.TrashCollection_TrashCollectionId, t.Profile_ProfileId })
-                .ForeignKey("dbo.TrashCollections", t => t.TrashCollection_TrashCollectionId, cascadeDelete: true)
-                .ForeignKey("dbo.Profiles", t => t.Profile_ProfileId, cascadeDelete: true)
-                .Index(t => t.TrashCollection_TrashCollectionId)
-                .Index(t => t.Profile_ProfileId);
-            
         }
         
         public override void Down()
@@ -183,18 +160,11 @@ namespace TrashCollector.Migrations
             DropForeignKey("dbo.AspNetUserLogins", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserRoles", "RoleId", "dbo.AspNetRoles");
+            DropForeignKey("dbo.Addresses", "Profile_ProfileId", "dbo.Profiles");
             DropForeignKey("dbo.Addresses", "ZipCodeId", "dbo.ZipCodes");
-            DropForeignKey("dbo.TrashCollectionProfiles", "Profile_ProfileId", "dbo.Profiles");
-            DropForeignKey("dbo.TrashCollectionProfiles", "TrashCollection_TrashCollectionId", "dbo.TrashCollections");
-            DropForeignKey("dbo.TrashCollections", "AddressId", "dbo.Addresses");
-            DropForeignKey("dbo.ProfileAddresses", "Address_AddressId", "dbo.Addresses");
-            DropForeignKey("dbo.ProfileAddresses", "Profile_ProfileId", "dbo.Profiles");
+            DropForeignKey("dbo.Addresses", "TrashCollectionId", "dbo.TrashCollections");
             DropForeignKey("dbo.Addresses", "StateId", "dbo.States");
             DropForeignKey("dbo.Addresses", "CityId", "dbo.Cities");
-            DropIndex("dbo.TrashCollectionProfiles", new[] { "Profile_ProfileId" });
-            DropIndex("dbo.TrashCollectionProfiles", new[] { "TrashCollection_TrashCollectionId" });
-            DropIndex("dbo.ProfileAddresses", new[] { "Address_AddressId" });
-            DropIndex("dbo.ProfileAddresses", new[] { "Profile_ProfileId" });
             DropIndex("dbo.AspNetUserLogins", new[] { "UserId" });
             DropIndex("dbo.AspNetUserClaims", new[] { "UserId" });
             DropIndex("dbo.AspNetUsers", "UserNameIndex");
@@ -202,20 +172,19 @@ namespace TrashCollector.Migrations
             DropIndex("dbo.AspNetUserRoles", new[] { "RoleId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "UserId" });
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");
-            DropIndex("dbo.TrashCollections", new[] { "AddressId" });
+            DropIndex("dbo.Addresses", new[] { "Profile_ProfileId" });
+            DropIndex("dbo.Addresses", new[] { "TrashCollectionId" });
             DropIndex("dbo.Addresses", new[] { "ZipCodeId" });
             DropIndex("dbo.Addresses", new[] { "StateId" });
             DropIndex("dbo.Addresses", new[] { "CityId" });
-            DropTable("dbo.TrashCollectionProfiles");
-            DropTable("dbo.ProfileAddresses");
             DropTable("dbo.AspNetUserLogins");
             DropTable("dbo.AspNetUserClaims");
             DropTable("dbo.AspNetUsers");
             DropTable("dbo.AspNetUserRoles");
             DropTable("dbo.AspNetRoles");
+            DropTable("dbo.Profiles");
             DropTable("dbo.ZipCodes");
             DropTable("dbo.TrashCollections");
-            DropTable("dbo.Profiles");
             DropTable("dbo.States");
             DropTable("dbo.Cities");
             DropTable("dbo.Addresses");

@@ -1,0 +1,60 @@
+﻿@using Microsoft.AspNet.Identity
+@using TrashCollector.Models
+@model TrashCollector.Models.Profile
+
+@{
+    ViewBag.Title = "Addresses";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.Partial("_DashboardNav")
+
+@if (Model.Addresses.Count > 0)
+{
+    <h3>My Addresses</h3>
+    var count = 1;
+    <div class="row">
+        @foreach (var address in Model.Addresses)
+        {
+            <div class="col-md-3">
+                <div class="well">
+                    @if (address.TrashCollection.StartDate != null)
+                    {
+                        <p>
+                            @Html.ActionLink("Modify Trash Collection", "EditCollection", "Address", routeValues: new { addressId = address.AddressId }, htmlAttributes: new { title = "Modify Trash Collection", @class = "btn btn-info btn-xs" })
+                        </p>
+                    }
+                    else
+                    {
+                        <p>
+                            @Html.ActionLink("Schedule Trash Collection", "ScheduleCollection", "Address", routeValues: new { addressId = address.AddressId }, htmlAttributes: new { title = "Schedule Trash Collection", @class = "btn btn-primary btn-xs" })
+                        </p>
+                    }
+                    <p>
+                        @address.StreetOne<br />
+                        @address.StreetTwo<br />
+                        @address.City.Name, @address.State.Abbreviation @address.ZipCode.Number
+                    </p>
+                    <p>
+                        @Html.ActionLink("Edit", "Edit", "Address", routeValues: new { id = address.AddressId }, htmlAttributes: new { title = "Add Address", @class = "btn btn-default btn-xs" })
+                        @Html.ActionLink("Delete", "Delete", "Address", routeValues: new { id = address.AddressId }, htmlAttributes: new { title = "Add Address", @class = "btn btn-danger btn-xs" })
+                    </p>
+                </div>
+            </div>
+            if (count % 4 == 0)
+            {
+                @:</div><div class="row">
+        }
+            count++;
+        }
+    </div>
+}
+else
+{
+    <h3>No Addresses Found</h3>
+    <div class="alert alert-danger" role="alert">You have not added any addresses to your account. Please @Html.ActionLink("add an address", "Create", "Address", routeValues: null, htmlAttributes: new { title = "Add Address", @class="alert-link" }) to schedule your trash collection.</div>
+}
+<p>
+    @Html.ActionLink("Add Address", "Create", "Address", routeValues: null, htmlAttributes: new { title = "Add Address", @class = "btn btn-primary" })
+</p>
+

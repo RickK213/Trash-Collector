@@ -1,32 +1,12 @@
 ﻿@using Microsoft.AspNet.Identity
-@using TrashCollector.Extensions
+@using TrashCollector.Models
 @model TrashCollector.Models.Profile
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Profile Details";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Welcome Back, @User.Identity.GetUserName()!</h2>
-@if (User.Identity.GetProfileId() != "")
-{
-    <p>Profile ID: @Model.ProfileId</p>
-}
-else
-{
-    <p>You do not have a profile created yet.</p>
-    <p>
-        @Html.ActionLink("Create Profile", "Create", "Profile", routeValues: null, htmlAttributes: new { title = "Create Profile", @class="btn btn-primary" })
-    </p>
-}
+@Html.Partial("_DashboardNav")
 
-@*<div>
-    <h4>Profile</h4>
-    <hr />
-    <dl class="dl-horizontal">
-    </dl>
-</div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.ProfileId }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>*@
+<h3>Account information to come.</h3>

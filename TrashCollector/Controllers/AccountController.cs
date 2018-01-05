@@ -75,7 +75,7 @@ namespace TrashCollector.Controllers
         {
             if (!ModelState.IsValid)
             {
-                //return RedirectToAction("Index", "Profile", new { id = User.Identity.GetUserId() });
+                //return RedirectToAction("Details", "Profile");
                 return View(model);
             }
 
@@ -85,7 +85,8 @@ namespace TrashCollector.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
+                    return RedirectToAction("Details", "Profile");
+                    //return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
@@ -174,7 +175,7 @@ namespace TrashCollector.Controllers
                     await this.UserManager.AddToRoleAsync(user.Id, model.UserRoles);
                     CreateEmptyProfile();
                     //Ends Here    
-                    return RedirectToAction("Index", "Profile");
+                    return RedirectToAction("Addresses", "Profile");
                 }
                 ViewBag.Name = new SelectList(context.Roles.Where(u => !u.Name.Contains("Admin"))
                                           .ToList(), "Name", "Name");

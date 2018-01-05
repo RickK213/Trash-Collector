@@ -34,7 +34,8 @@ namespace TrashCollector
                 role.Name = "Admin";
                 roleManager.Create(role);
 
-                //Here we create a Admin super user who will maintain the website                  
+                //Here we create a Admin super user who will maintain the website
+                //TO DO: move this to the seed method                  
 
                 var user = new ApplicationUser();
                 user.UserName = "admin";

@@ -1,0 +1,42 @@
+﻿@using Microsoft.AspNet.Identity
+@using TrashCollector.Models
+@model TrashCollector.Models.Address
+
+@{
+    ViewBag.Title = "Schedule Trash Collection";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Schedule Trash Collection</h2>
+<div class="row">
+    @using (Html.BeginForm())
+    {
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label class="control-label col-md-2">Address</label>
+                <div class="col-md-10">
+                    @Model.StreetOne<br />
+                    @Model.StreetTwo<br />
+                    @Model.City.Name, @Model.State.Abbreviation @Model.ZipCode.Number
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">Day Of The Week</label>
+                <div class="col-md-10">
+                    <select class="form-control">
+                        <option>@DayOfWeek.Monday</option>
+                        <option>@DayOfWeek.Tuesday</option>
+                        <option>@DayOfWeek.Wednesday</option>
+                        <option>@DayOfWeek.Thursday</option>
+                        <option>@DayOfWeek.Friday</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </div>
+        </div>
+    }
+</div>

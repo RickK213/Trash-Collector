@@ -8,6 +8,7 @@ namespace TrashCollector.Models
 {
     public class Address
     {
+        //properties
         public int AddressId { get; set; }
         //[Display(Name = "Date of Birth")]
         public string StreetOne { get; set; }
@@ -22,6 +23,8 @@ namespace TrashCollector.Models
         public ZipCode ZipCode { get; set; }
         public int ZipCodeId { get; set; }
 
-        public ICollection<Profile> UserProfiles { get; set; }
+        public TrashCollection TrashCollection { get; set; }
+        public int? TrashCollectionId { get; set; }
+
     }
 }

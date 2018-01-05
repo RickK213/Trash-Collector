@@ -9,6 +9,5 @@ namespace TrashCollector.Models
     {
         public int ProfileId { get; set; }
         public ICollection<Address> Addresses { get; set; }
-        public ICollection<TrashCollection> TrashCollections { get; set; }
     }
 }

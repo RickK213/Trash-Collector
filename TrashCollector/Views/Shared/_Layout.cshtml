@@ -21,5 +21,20 @@
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+    <script>
+        $(function () {
+            //to do: move this into custom scripts file
+            let controllerName = '/' + location.pathname.split("/")[1];
+            let actionName = "/" + location.pathname.split("/")[2];
+            console.log("controller: " + controllerName + " action: " + actionName);
+            let fullPathname = controllerName;
+            if (actionName !== '/undefined')
+            {
+                fullPathname += actionName;
+            }
+            console.log(fullPathname);
+            $('li a[href="' + fullPathname + '"]').parent('li').addClass('active');
+        });
+    </script>
 </body>
 </html>
