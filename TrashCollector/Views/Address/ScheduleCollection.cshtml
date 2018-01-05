@@ -79,14 +79,6 @@
         </div>
 }
 </div>
-@{ 
-    //geocoding
-    using (WebClient wc = new WebClient())
-    {
-        var json = wc.DownloadString(@"https://maps.googleapis.com/maps/api/geocode/json?address=2573+N+65th+St+Wauwatosa+WI&key=AIzaSyD3F02Dr7BSQRR48YgU8akdwdR-9FsXp3w");
-        @json
-    }
-}
 
 @section Scripts {
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3F02Dr7BSQRR48YgU8akdwdR-9FsXp3w"></script>
@@ -136,7 +128,7 @@
             //Key: AIzaSyD3F02Dr7BSQRR48YgU8akdwdR-9FsXp3w
             function initMap() {
                 var map = new google.maps.Map(document.getElementById('map'), {
-                    zoom: 14,
+                    zoom: 15,
                     center: { lat: 43.0673580302915, lng: -87.99250196970848 }
                 });
                 var marker = new google.maps.Marker({
@@ -146,6 +138,11 @@
             }
             initMap();
 
+            //geocoding test
+            
+            $.getJSON('https://maps.googleapis.com/maps/api/geocode/json?address=2573+N+65th+St+Wauwatosa+WI&key=AIzaSyD3F02Dr7BSQRR48YgU8akdwdR-9FsXp3w', function (data) {
+                console.log(data.results[0].geometry.location);
+            });
         });
     </script>
 

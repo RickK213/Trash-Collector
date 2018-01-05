@@ -8,7 +8,8 @@ using System.Web;
 using System.Web.Mvc;
 using TrashCollector.Models;
 using TrashCollector.Extensions;
-
+using System.Web.Helpers;
+using Newtonsoft.Json;
 
 namespace TrashCollector.Controllers
 {
@@ -89,6 +90,17 @@ namespace TrashCollector.Controllers
                 }
                 profile.Addresses.Add(address);
                 db.SaveChanges();
+                //geocoding
+
+                //YOU ARE HERE. MAYBE MOVE THIS TO THE FRONT END?
+                string mapObject;
+                using (WebClient wc = new WebClient())
+                {
+                    mapObject = wc.DownloadString(@"https://maps.googleapis.com/maps/api/geocode/json?address=2573+N+65th+St+Wauwatosa+WI&key=AIzaSyD3F02Dr7BSQRR48YgU8akdwdR-9FsXp3w");
+                }
+                Location location = JsonConvert.DeserializeObject<Location>(mapObject);
+                return Content(mapObject);
+
                 return RedirectToAction("Addresses", "Profile");
             }
 
