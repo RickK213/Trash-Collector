@@ -12,13 +12,27 @@
 {
     <h3>My Addresses</h3>
     var count = 1;
-foreach (var address in Model.Addresses)
-{
-        <h4>Address @count</h4>
-        <p>@address.StreetOne</p>
-        <p>@address.StreetTwo</p>
-        <p>@address.City.Name, @address.State.Name @address.ZipCode.Number</p>
+    <div class="row">
+    @foreach (var address in Model.Addresses)
+    {
+        <div class="col-md-3">
+            <div class="well">
+                <p>@address.StreetOne<br />
+                @address.StreetTwo<br />
+                @address.City.Name, @address.State.Abbreviation @address.ZipCode.Number</p>
+                <p>
+                    @Html.ActionLink("Edit", "Edit", "Address", routeValues: new { id = address.AddressId }, htmlAttributes: new { title = "Add Address", @class = "btn btn-default btn-xs" })
+                    @Html.ActionLink("Delete", "Delete", "Address", routeValues: new { id = address.AddressId }, htmlAttributes: new { title = "Add Address", @class = "btn btn-danger btn-xs" })
+                </p>
+            </div>
+        </div>
+        if(count % 4 == 0)
+        {
+            @:</div><div class="row">
+        }
+        count++;
     }
+    </div>
 }
 <p>
     @Html.ActionLink("Add Address", "Create", "Address", routeValues: null, htmlAttributes: new { title = "Add Address", @class = "btn btn-primary" })

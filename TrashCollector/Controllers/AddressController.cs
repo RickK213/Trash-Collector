@@ -65,24 +65,25 @@ namespace TrashCollector.Controllers
 
             if (ModelState.IsValid)
             {
-                Address address = new Address();
+                Address address = null;
+                address = new Address();
                 address.StreetOne = StreetOne;
                 address.StreetTwo = StreetTwo;
                 address.CityId = GetCityID(City_Name);
                 address.StateId = GetStateID(StateId);
                 address.ZipCodeId = GetZipCodeID(ZipCode_Number);
 
-
                 db.Addresses.Add(address);
-                int addressId = db.SaveChanges();
-                Address insertedAddress = db.Addresses.First(a => a.AddressId == addressId);
+                db.SaveChanges();
+                //Address insertedAddress = null;
+                //insertedAddress = db.Addresses.First(a => a.AddressId == addressId);
                 int profileId = Convert.ToInt32(User.Identity.GetProfileId());
                 var profile = db.Profiles.First(p=> p.ProfileId == profileId);
                 if ( profile.Addresses == null )
                 {
                     profile.Addresses = new List<Address>();
                 }
-                profile.Addresses.Add(insertedAddress);
+                profile.Addresses.Add(address);
                 db.SaveChanges();
                 return RedirectToAction("Index", "Profile");
             }
@@ -113,13 +114,14 @@ namespace TrashCollector.Controllers
 
         private int GetCityID(string City_Name)
         {
-            if (db.Cities.Any(c => c.Name == City_Name.ToLower()))
+            if (db.Cities.Any(c => c.Name.ToLower() == City_Name.ToLower()))
             {
                 var cityFound = db.Cities.First(c => c.Name == City_Name);
                 return cityFound.CityId;
             }
             City city = new City();
-            city.Name = City_Name.ToLower();
+            string formattedName = char.ToUpper(City_Name[0]) + City_Name.Substring(1).ToLower();
+            city.Name = formattedName;
             db.Cities.Add(city);
             return db.SaveChanges();
         }

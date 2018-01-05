@@ -73,7 +73,7 @@ namespace TrashCollector.Migrations
                 c => new
                     {
                         ZipCodeId = c.Int(nullable: false, identity: true),
-                        Number = c.String(),
+                        Number = c.String(nullable: false),
                     })
                 .PrimaryKey(t => t.ZipCodeId);
             

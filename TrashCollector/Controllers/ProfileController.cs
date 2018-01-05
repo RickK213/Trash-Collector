@@ -24,7 +24,13 @@ namespace TrashCollector.Controllers
         {
             int profileId = Convert.ToInt32(User.Identity.GetProfileId());
             //var userProfile = db.Profiles.Include(p => p.Addresses).Include(p => p.TrashCollections).First(p => p.ProfileId == profileId);
-            var userProfile = db.Profiles.Include(p => p.Addresses).Include("Addresses.City").Include("Addresses.State").Include("Addresses.ZipCode").Include(p => p.TrashCollections).First(p => p.ProfileId == profileId);
+            var userProfile = db.Profiles
+                .Include(p => p.Addresses)
+                .Include("Addresses.City")
+                .Include("Addresses.State")
+                .Include("Addresses.ZipCode")
+                .Include(p => p.TrashCollections)
+                .First(p => p.ProfileId == profileId);
             return View(userProfile);
         }
 
