@@ -64,11 +64,14 @@ namespace TrashCollector.Controllers
         // POST: Address/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
         [ValidateAntiForgeryToken]
         //public ActionResult Create([Bind(Include = "AddressId,StreetOne,StreetTwo,City,State,ZipCode")] Address address)
-        public ActionResult Create(string StreetOne, string StreetTwo, string City_Name, string StateId, string ZipCode_Number)
+        [HttpPost]
+        //[WebMethod]
+        public ActionResult Create(string StreetOne, string StreetTwo, string City_Name, string StateId, string ZipCode_Number, string lat, string lng)
         {
+            //return Content(String.Format("Lat: {0} Lng: {1}", lat, lng));
+
             if (!User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Login", "Account");
@@ -76,30 +79,20 @@ namespace TrashCollector.Controllers
 
             if (ModelState.IsValid)
             {
-                Address address = GetAddress(StreetOne, StreetTwo, City_Name, StateId, ZipCode_Number);
-                if(address.AddressId == 0)
+                Address address = GetAddress(StreetOne, StreetTwo, City_Name, StateId, ZipCode_Number, lat, lng);
+                if (address.AddressId == 0)
                 {
-                    return RedirectToAction("DuplicateAddress","Address");
+                    return RedirectToAction("DuplicateAddress", "Address");
                 }
 
                 int profileId = Convert.ToInt32(User.Identity.GetProfileId());
-                var profile = db.Profiles.First(p=> p.ProfileId == profileId);
-                if ( profile.Addresses == null )
+                var profile = db.Profiles.First(p => p.ProfileId == profileId);
+                if (profile.Addresses == null)
                 {
                     profile.Addresses = new List<Address>();
                 }
                 profile.Addresses.Add(address);
                 db.SaveChanges();
-                //geocoding
-
-                //YOU ARE HERE. MAYBE MOVE THIS TO THE FRONT END?
-                string mapObject;
-                using (WebClient wc = new WebClient())
-                {
-                    mapObject = wc.DownloadString(@"https://maps.googleapis.com/maps/api/geocode/json?address=2573+N+65th+St+Wauwatosa+WI&key=AIzaSyD3F02Dr7BSQRR48YgU8akdwdR-9FsXp3w");
-                }
-                Location location = JsonConvert.DeserializeObject<Location>(mapObject);
-                return Content(mapObject);
 
                 return RedirectToAction("Addresses", "Profile");
             }
@@ -108,7 +101,16 @@ namespace TrashCollector.Controllers
             return View();
         }
 
-        private Address GetAddress(string StreetOne, string StreetTwo, string City_Name, string StateId, string ZipCode_Number)
+        [HttpPost]
+        [System.Web.Services.WebMethod()]
+        [System.Web.Script.Services.ScriptMethod()]
+        public ActionResult TestMethod(string name)
+        {
+            return Content("hello, " + name);
+        }
+
+
+        private Address GetAddress(string StreetOne, string StreetTwo, string City_Name, string StateId, string ZipCode_Number, string lat, string lng)
         {
             int stateIdNumber = Convert.ToInt32(StateId);
             if (db.Addresses.Any(a => a.StreetOne == StreetOne && a.StreetTwo == StreetTwo && a.City.Name == City_Name && a.State.StateId == stateIdNumber && a.ZipCode.Number == ZipCode_Number))
@@ -123,6 +125,8 @@ namespace TrashCollector.Controllers
             address.CityId = GetCityID(City_Name);
             address.StateId = GetStateID(StateId);
             address.ZipCodeId = GetZipCodeID(ZipCode_Number);
+            address.lat = Convert.ToSingle(lat);
+            address.lng = Convert.ToSingle(lng);
             address.TrashCollectionId = trashCollectionId;
             db.Addresses.Add(address);
             db.SaveChanges();

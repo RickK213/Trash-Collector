@@ -17,6 +17,8 @@ namespace TrashCollector.Migrations
                         CityId = c.Int(nullable: false),
                         StateId = c.Int(nullable: false),
                         ZipCodeId = c.Int(nullable: false),
+                        lat = c.Single(),
+                        lng = c.Single(),
                         TrashCollectionId = c.Int(),
                         Profile_ProfileId = c.Int(),
                     })

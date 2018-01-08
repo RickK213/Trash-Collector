@@ -208,16 +208,15 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201801052115423_init.cs" />
-    <Compile Include="Migrations\201801052115423_init.Designer.cs">
-      <DependentUpon>201801052115423_init.cs</DependentUpon>
+    <Compile Include="Migrations\201801080456136_init.cs" />
+    <Compile Include="Migrations\201801080456136_init.Designer.cs">
+      <DependentUpon>201801080456136_init.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\Address.cs" />
     <Compile Include="Models\City.cs" />
     <Compile Include="Models\IdentityModels.cs" />
-    <Compile Include="Models\Location.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Models\State.cs" />
     <Compile Include="Models\Profile.cs" />
@@ -245,8 +244,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Domain\SeedData\states.csv" />
-    <EmbeddedResource Include="Migrations\201801052115423_init.resx">
-      <DependentUpon>201801052115423_init.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201801080456136_init.resx">
+      <DependentUpon>201801080456136_init.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

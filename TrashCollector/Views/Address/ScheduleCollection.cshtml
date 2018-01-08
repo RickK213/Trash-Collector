@@ -7,7 +7,9 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Schedule Trash Collection</h2>
+<div class="row">
+    <div id="map" style="width: 100%; height: 400px; margin-bottom: 20px;"></div>
+</div>
 <div class="row">
     @using (Html.BeginForm())
     {
@@ -16,7 +18,6 @@
             <div class="form-group">
                 <label class="control-label col-md-2">Address</label>
                 <div class="col-md-10">
-                    <div id="map" style="width: 300px; height: 300px;"></div>
                     @Model.StreetOne<br />
                     @Model.StreetTwo<br />
                     @Model.City.Name, @Model.State.Abbreviation @Model.ZipCode.Number
@@ -73,7 +74,7 @@
 
             <div class="form-group">
                 <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Save" class="btn btn-primary" />
+                    <input type="submit" value="Save" class="btn btn-primary" id="submit" />
                 </div>
             </div>
         </div>
@@ -138,8 +139,7 @@
             }
             initMap();
 
-            //geocoding test
-            
+            //geocoding test            
             $.getJSON('https://maps.googleapis.com/maps/api/geocode/json?address=2573+N+65th+St+Wauwatosa+WI&key=AIzaSyD3F02Dr7BSQRR48YgU8akdwdR-9FsXp3w', function (data) {
                 console.log(data.results[0].geometry.location);
             });

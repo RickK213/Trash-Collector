@@ -13,7 +13,7 @@ namespace TrashCollector.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201801052115423_init"; }
+            get { return "201801080456136_init"; }
         }
         
         string IMigrationMetadata.Source
