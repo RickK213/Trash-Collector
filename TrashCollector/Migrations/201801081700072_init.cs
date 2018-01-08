@@ -74,6 +74,15 @@ namespace TrashCollector.Migrations
                 .PrimaryKey(t => t.ZipCodeId);
             
             CreateTable(
+                "dbo.Invoices",
+                c => new
+                    {
+                        InvoiceId = c.Int(nullable: false, identity: true),
+                        UserId = c.Int(nullable: false),
+                    })
+                .PrimaryKey(t => t.InvoiceId);
+            
+            CreateTable(
                 "dbo.Profiles",
                 c => new
                     {
@@ -184,6 +193,7 @@ namespace TrashCollector.Migrations
             DropTable("dbo.AspNetUserRoles");
             DropTable("dbo.AspNetRoles");
             DropTable("dbo.Profiles");
+            DropTable("dbo.Invoices");
             DropTable("dbo.ZipCodes");
             DropTable("dbo.TrashCollections");
             DropTable("dbo.States");

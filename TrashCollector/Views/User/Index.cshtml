@@ -1,18 +1,35 @@
-﻿@{
-    ViewBag.Title = "Index";
+﻿@using Microsoft.AspNet.Identity
+@using TrashCollector.Models
+@model IEnumerable<ApplicationUser>
+
+@{
+    ViewBag.Title = "Manage Users";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@Html.Partial("_DashboardNav")
 
-
-@if (ViewBag.displayMenu == "Yes")
-{
-    <h1>Welcome Admin. Now you can create user Role.</h1>
-    <ul>
-        <li>@Html.ActionLink("Manage Role", "Index", "Role")</li>
-    </ul>
-}
-else
-{
-    <h2>  Welcome <strong>@ViewBag.Name</strong> :) .We will add user module soon </h2>
-}
+<h3>Manage Users</h3>
+<p>
+    @Html.ActionLink("Create New", "Create", null, new { @class="btn btn-primary" })
+</p>
+<table class="table">
+    <tr>
+        <th>User ID</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Actions</th>
+    </tr>
+    @foreach (var user in Model)
+    {
+        <tr>
+            <td>@user.Id</td>
+            <td>@user.UserName</td>
+            <td>@user.Email</td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { userId = user.Id }, new { @class="btn btn-info btn-xs" })
+                @Html.ActionLink("Delete", "Delete", new { userId = user.Id }, new { @class = "btn btn-danger btn-xs" })
+            </td>
+        </tr>
+    }
+</table>

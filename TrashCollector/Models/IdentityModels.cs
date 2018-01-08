@@ -51,5 +51,8 @@ namespace TrashCollector.Models
         public System.Data.Entity.DbSet<TrashCollector.Models.State> States { get; set; }
 
         public System.Data.Entity.DbSet<TrashCollector.Models.ZipCode> ZipCodes { get; set; }
+
+        public System.Data.Entity.DbSet<TrashCollector.Models.Invoice> Invoices { get; set; }
     }
+
 }

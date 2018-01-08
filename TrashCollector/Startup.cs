@@ -40,6 +40,7 @@ namespace TrashCollector
                 var user = new ApplicationUser();
                 user.UserName = "admin";
                 user.Email = "admin@rk-trash-collection.com";
+                user.Profile = new Profile();
 
                 string userPWD = "Password123!";
 
@@ -49,8 +50,8 @@ namespace TrashCollector
                 if (chkUser.Succeeded)
                 {
                     var result1 = UserManager.AddToRole(user.Id, "Admin");
-
                 }
+
             }
 
             // creating Creating Employee role    

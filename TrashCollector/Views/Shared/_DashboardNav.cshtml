@@ -3,11 +3,27 @@
 <h2>Welcome back, @User.Identity.GetUserName()</h2>
 <div class="row">
     <div class="col-md-12">
-        <ul class="nav nav-tabs">
-            <li role="presentation">@Html.ActionLink("Account", "Details", "Profile")</li>
-            <li role="presentation">@Html.ActionLink("My Addresses", "Addresses", "Profile")</li>
-            <li role="presentation">@Html.ActionLink("Transaction History", "Transactions", "Profile")</li>
-        </ul>
+        @if (User.IsInRole("Admin"))
+        {
+            <ul class="nav nav-tabs">
+                <li role="presentation">@Html.ActionLink("Users", "Index", "User")</li>
+                <li role="presentation">@Html.ActionLink("Invoices", "Index", "Invoices")</li>
+            </ul>
+        }
+        else if (User.IsInRole("Customer"))
+        {
+            <ul class="nav nav-tabs">
+                <li role="presentation">@Html.ActionLink("Account", "Details", "Profile")</li>
+                <li role="presentation">@Html.ActionLink("My Addresses", "Addresses", "Profile")</li>
+                <li role="presentation">@Html.ActionLink("Transaction History", "Transactions", "Profile")</li>
+            </ul>
+        }
+        else if (User.IsInRole("Employee"))
+        {
+            <ul class="nav nav-tabs">
+                <li role="presentation">@Html.ActionLink("Trash Collections", "Details", "Profile")</li>
+            </ul>
+        }
     </div>
 </div>
 

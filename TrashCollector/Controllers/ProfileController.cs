@@ -38,7 +38,19 @@ namespace TrashCollector.Controllers
         public ActionResult Details()
         {
             //This is where the user's account information will go.
-            return View();
+            if (User.IsInRole("Admin"))
+            {
+                return RedirectToAction("Index", "User");
+            }
+            else if (User.IsInRole("Employee"))
+            {
+                //change this!
+                return RedirectToAction("Index", "User");
+            }
+            else
+            {
+                return View();
+            }
         }
 
         // GET: Profile/Addresses

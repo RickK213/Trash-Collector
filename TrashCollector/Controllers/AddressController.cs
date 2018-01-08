@@ -101,15 +101,6 @@ namespace TrashCollector.Controllers
             return View();
         }
 
-        [HttpPost]
-        [System.Web.Services.WebMethod()]
-        [System.Web.Script.Services.ScriptMethod()]
-        public ActionResult TestMethod(string name)
-        {
-            return Content("hello, " + name);
-        }
-
-
         private Address GetAddress(string StreetOne, string City_Name, string StateId, string ZipCode_Number, string lat, string lng)
         {
             int stateIdNumber = Convert.ToInt32(StateId);

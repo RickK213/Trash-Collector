@@ -86,7 +86,6 @@ namespace TrashCollector.Controllers
             {
                 case SignInStatus.Success:
                     return RedirectToAction("Details", "Profile");
-                    //return RedirectToLocal(returnUrl);
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:

@@ -9,6 +9,10 @@
 
 @Html.Partial("_DashboardNav")
 
+<p>
+    @Html.ActionLink("Add Address", "Create", "Address", routeValues: null, htmlAttributes: new { title = "Add Address", @class = "btn btn-primary" })
+</p>
+
 @if (Model.Addresses.Count > 0)
 {
     <h3>My Addresses</h3>
@@ -57,10 +61,6 @@ else
     <h3>No Addresses Found</h3>
     <div class="alert alert-danger" role="alert">You have not added any addresses to your account. Please @Html.ActionLink("add an address", "Create", "Address", routeValues: null, htmlAttributes: new { title = "Add Address", @class="alert-link" }) to schedule your trash collection.</div>
 }
-<p>
-    @Html.ActionLink("Add Address", "Create", "Address", routeValues: null, htmlAttributes: new { title = "Add Address", @class = "btn btn-primary" })
-</p>
-
 @section Scripts {
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3F02Dr7BSQRR48YgU8akdwdR-9FsXp3w"></script>
     <script type="text/javascript">
