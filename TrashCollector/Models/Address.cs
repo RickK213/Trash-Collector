@@ -12,7 +12,6 @@ namespace TrashCollector.Models
         public int AddressId { get; set; }
         //[Display(Name = "Date of Birth")]
         public string StreetOne { get; set; }
-        public string StreetTwo { get; set; }
 
         public City City { get; set; }
         public int CityId { get; set; }

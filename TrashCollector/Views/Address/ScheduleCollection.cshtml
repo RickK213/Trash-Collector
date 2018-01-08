@@ -19,7 +19,6 @@
                 <label class="control-label col-md-2">Address</label>
                 <div class="col-md-10">
                     @Model.StreetOne<br />
-                    @Model.StreetTwo<br />
                     @Model.City.Name, @Model.State.Abbreviation @Model.ZipCode.Number
                 </div>
             </div>
@@ -130,10 +129,10 @@
             function initMap() {
                 var map = new google.maps.Map(document.getElementById('map'), {
                     zoom: 15,
-                    center: { lat: 43.0673580302915, lng: -87.99250196970848 }
+                    center: { lat: @Model.lat, lng: @Model.lng }
                 });
                 var marker = new google.maps.Marker({
-                    position: { lat: 43.0673580302915, lng: -87.99250196970848 },
+                    position: { lat: @Model.lat, lng: @Model.lng },
                     map: map
                 });
             }

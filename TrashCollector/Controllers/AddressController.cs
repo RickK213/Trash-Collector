@@ -68,7 +68,7 @@ namespace TrashCollector.Controllers
         //public ActionResult Create([Bind(Include = "AddressId,StreetOne,StreetTwo,City,State,ZipCode")] Address address)
         [HttpPost]
         //[WebMethod]
-        public ActionResult Create(string StreetOne, string StreetTwo, string City_Name, string StateId, string ZipCode_Number, string lat, string lng)
+        public ActionResult Create(string StreetOne, string City_Name, string StateId, string ZipCode_Number, string lat, string lng)
         {
             //return Content(String.Format("Lat: {0} Lng: {1}", lat, lng));
 
@@ -79,7 +79,7 @@ namespace TrashCollector.Controllers
 
             if (ModelState.IsValid)
             {
-                Address address = GetAddress(StreetOne, StreetTwo, City_Name, StateId, ZipCode_Number, lat, lng);
+                Address address = GetAddress(StreetOne, City_Name, StateId, ZipCode_Number, lat, lng);
                 if (address.AddressId == 0)
                 {
                     return RedirectToAction("DuplicateAddress", "Address");
@@ -110,18 +110,17 @@ namespace TrashCollector.Controllers
         }
 
 
-        private Address GetAddress(string StreetOne, string StreetTwo, string City_Name, string StateId, string ZipCode_Number, string lat, string lng)
+        private Address GetAddress(string StreetOne, string City_Name, string StateId, string ZipCode_Number, string lat, string lng)
         {
             int stateIdNumber = Convert.ToInt32(StateId);
-            if (db.Addresses.Any(a => a.StreetOne == StreetOne && a.StreetTwo == StreetTwo && a.City.Name == City_Name && a.State.StateId == stateIdNumber && a.ZipCode.Number == ZipCode_Number))
+            if (db.Addresses.Any(a => a.StreetOne == StreetOne && a.City.Name == City_Name && a.State.StateId == stateIdNumber && a.ZipCode.Number == ZipCode_Number))
             {
-                var addressFound = db.Addresses.First(a => a.StreetOne == StreetOne && a.StreetTwo == StreetTwo && a.City.Name == City_Name && a.State.StateId == stateIdNumber && a.ZipCode.Number == ZipCode_Number);
+                var addressFound = db.Addresses.First(a => a.StreetOne == StreetOne && a.City.Name == City_Name && a.State.StateId == stateIdNumber && a.ZipCode.Number == ZipCode_Number);
                 return new Address();
             }
             int trashCollectionId = CreateEmptyTrashCollection();
             Address address = new Address();
             address.StreetOne = StreetOne;
-            address.StreetTwo = StreetTwo;
             address.CityId = GetCityID(City_Name);
             address.StateId = GetStateID(StateId);
             address.ZipCodeId = GetZipCodeID(ZipCode_Number);

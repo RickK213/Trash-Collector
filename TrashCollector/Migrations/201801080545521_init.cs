@@ -13,7 +13,6 @@ namespace TrashCollector.Migrations
                     {
                         AddressId = c.Int(nullable: false, identity: true),
                         StreetOne = c.String(),
-                        StreetTwo = c.String(),
                         CityId = c.Int(nullable: false),
                         StateId = c.Int(nullable: false),
                         ZipCodeId = c.Int(nullable: false),
