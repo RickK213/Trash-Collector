@@ -92,6 +92,22 @@ namespace TrashCollector.Migrations
                 .PrimaryKey(t => t.ProfileId);
             
             CreateTable(
+                "dbo.Pickups",
+                c => new
+                    {
+                        PickupId = c.Int(nullable: false, identity: true),
+                        IsInvoiced = c.Boolean(nullable: false),
+                        DateCompleted = c.DateTime(nullable: false),
+                        AddressId = c.Int(nullable: false),
+                        Profile_ProfileId = c.Int(),
+                    })
+                .PrimaryKey(t => t.PickupId)
+                .ForeignKey("dbo.Addresses", t => t.AddressId, cascadeDelete: true)
+                .ForeignKey("dbo.Profiles", t => t.Profile_ProfileId)
+                .Index(t => t.AddressId)
+                .Index(t => t.Profile_ProfileId);
+            
+            CreateTable(
                 "dbo.AspNetRoles",
                 c => new
                     {
@@ -171,6 +187,8 @@ namespace TrashCollector.Migrations
             DropForeignKey("dbo.AspNetUserLogins", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserClaims", "UserId", "dbo.AspNetUsers");
             DropForeignKey("dbo.AspNetUserRoles", "RoleId", "dbo.AspNetRoles");
+            DropForeignKey("dbo.Pickups", "Profile_ProfileId", "dbo.Profiles");
+            DropForeignKey("dbo.Pickups", "AddressId", "dbo.Addresses");
             DropForeignKey("dbo.Addresses", "Profile_ProfileId", "dbo.Profiles");
             DropForeignKey("dbo.Addresses", "ZipCodeId", "dbo.ZipCodes");
             DropForeignKey("dbo.Addresses", "TrashCollectionId", "dbo.TrashCollections");
@@ -183,6 +201,8 @@ namespace TrashCollector.Migrations
             DropIndex("dbo.AspNetUserRoles", new[] { "RoleId" });
             DropIndex("dbo.AspNetUserRoles", new[] { "UserId" });
             DropIndex("dbo.AspNetRoles", "RoleNameIndex");
+            DropIndex("dbo.Pickups", new[] { "Profile_ProfileId" });
+            DropIndex("dbo.Pickups", new[] { "AddressId" });
             DropIndex("dbo.Addresses", new[] { "Profile_ProfileId" });
             DropIndex("dbo.Addresses", new[] { "TrashCollectionId" });
             DropIndex("dbo.Addresses", new[] { "ZipCodeId" });
@@ -193,6 +213,7 @@ namespace TrashCollector.Migrations
             DropTable("dbo.AspNetUsers");
             DropTable("dbo.AspNetUserRoles");
             DropTable("dbo.AspNetRoles");
+            DropTable("dbo.Pickups");
             DropTable("dbo.Profiles");
             DropTable("dbo.Invoices");
             DropTable("dbo.ZipCodes");

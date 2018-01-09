@@ -22,7 +22,8 @@
         else if (User.IsInRole("Employee"))
         {
             <ul class="nav nav-tabs">
-                <li role="presentation">@Html.ActionLink("Trash Collections", "Details", "Profile")</li>
+                <li role="presentation">@Html.ActionLink("Pickups", "Pickups", "Profile")</li>
+                <li role="presentation">@Html.ActionLink("Pickup History", "PickupHistory", "Profile")</li>
             </ul>
         }
     </div>

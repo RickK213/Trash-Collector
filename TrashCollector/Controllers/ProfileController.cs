@@ -17,7 +17,6 @@ namespace TrashCollector.Controllers
     {
         //member variables
         private ApplicationDbContext db = new ApplicationDbContext();
-        Profile profile;
 
         // GET: Profile
         public ActionResult Index()
@@ -45,7 +44,7 @@ namespace TrashCollector.Controllers
             else if (User.IsInRole("Employee"))
             {
                 //change this!
-                return RedirectToAction("Index", "Pickup");
+                return RedirectToAction("Pickups", "Profile");
             }
             else
             {
@@ -165,6 +164,45 @@ namespace TrashCollector.Controllers
                 db.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        public ActionResult Pickups()
+        {
+            if (User.IsInRole("Customer"))
+            {
+                return HttpNotFound();
+            }
+
+            //get all addresses that have a start date and are in the user's zipcodes
+            int profileId = Convert.ToInt32(User.Identity.GetProfileId());
+            var profile = db.Profiles.Find(profileId);
+
+            string[] employeeZipcodes = profile.ZipCodes.Split(Convert.ToChar(","));
+
+            var addresses = db.Addresses
+                .Include(a => a.TrashCollection)
+                .Where( a => employeeZipcodes.Contains(a.ZipCode.Number) )
+                .Where( a => a.TrashCollection.StartDate <= DateTime.Now )
+                .ToList();
+
+            //remove addresses from the list where the customer is on vacay
+            for (int i=0; i<addresses.Count; i++)
+            {
+                if (addresses[i].TrashCollection.VacationStartDate != null)
+                {
+                    DateTime vacationStart = (DateTime)addresses[i].TrashCollection.VacationStartDate;
+                    DateTime vacationEnd = (DateTime)addresses[i].TrashCollection.VacationEndDate;
+                    if (vacationStart < DateTime.Now)
+                    {
+                        if (vacationEnd > DateTime.Now)
+                        {
+                            addresses.RemoveAt(i);
+                        }
+                    }
+                }
+            }
+
+            return View(addresses);
         }
     }
 }

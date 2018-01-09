@@ -1,0 +1,51 @@
+﻿@model IEnumerable<TrashCollector.Models.Address>
+@{
+    ViewBag.Title = "My Pickups";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Html.Partial("_DashboardNav")
+
+<div class="row">
+    <div id="map" style="width: 100%; height: 400px; margin-bottom: 20px; margin-top: 20px;"></div>
+</div>
+
+@foreach (var address in Model)
+{
+    <span class="marker" data-lat="@address.lat" data-lng="@address.lng"></span>
+}
+
+@section Scripts{
+    
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD3F02Dr7BSQRR48YgU8akdwdR-9FsXp3w"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            let map;
+            function initMap(latitude, longtitude) {
+                map = new google.maps.Map(document.getElementById('map'), {
+                    zoom: 10,
+                    center: { lat: latitude, lng: longtitude }
+                });
+            }
+
+            function addMarker(latitude, longtitude) {
+                marker = new google.maps.Marker({
+                    position: { lat: latitude, lng: longtitude },
+                    map: map
+                });
+            }
+
+            let initialMapData = $(".marker").data();
+            initMap(initialMapData.lat, initialMapData.lng);
+            
+            $(".marker").each(function () {
+                let mapData = $(this).data();
+                addMarker(mapData.lat, mapData.lng);
+            });
+
+        });
+
+    </script>
+
+}
