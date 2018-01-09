@@ -30,5 +30,10 @@ namespace TrashCollector.Extensions
             return (claim.Value != "") ? true : false;
         }
 
+        public static string GetUserRole()
+        {
+            return "Customer";
+        }
+
     }
 }

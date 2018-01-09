@@ -9,13 +9,13 @@
 
 @Html.Partial("_DashboardNav")
 
-<p>
-    @Html.ActionLink("Add Address", "Create", "Address", routeValues: null, htmlAttributes: new { title = "Add Address", @class = "btn btn-primary" })
-</p>
 
 @if (Model.Addresses.Count > 0)
 {
     <h3>My Addresses</h3>
+    <p>
+        @Html.ActionLink("Add Address", "Create", "Address", routeValues: null, htmlAttributes: new { title = "Add Address", @class = "btn btn-primary" })
+    </p>
     var count = 1;
     <div class="row">
         @foreach (var address in Model.Addresses)
@@ -59,6 +59,9 @@
 else
 {
     <h3>No Addresses Found</h3>
+    <p>
+        @Html.ActionLink("Add Address", "Create", "Address", routeValues: null, htmlAttributes: new { title = "Add Address", @class = "btn btn-primary" })
+    </p>
     <div class="alert alert-danger" role="alert">You have not added any addresses to your account. Please @Html.ActionLink("add an address", "Create", "Address", routeValues: null, htmlAttributes: new { title = "Add Address", @class="alert-link" }) to schedule your trash collection.</div>
 }
 @section Scripts {

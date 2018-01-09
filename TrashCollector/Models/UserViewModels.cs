@@ -5,6 +5,12 @@ using Microsoft.Owin.Security;
 
 namespace TrashCollector.Models
 {
+    public class IndexUserViewModel
+    {
+        public ApplicationUser[] Users { get; set; }
+        public Role[] UserRoles { get; set; }
+    }
+
     public class EditUserViewModel
     {
         public ApplicationUser User { get; set; }

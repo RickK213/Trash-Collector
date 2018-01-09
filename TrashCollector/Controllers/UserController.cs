@@ -8,6 +8,7 @@ using System.Web;
 using System.Web.Mvc;
 using TrashCollector.Models;
 using System.Web.Security;
+using TrashCollector.Extensions;
 
 namespace TrashCollector.Controllers
 {
@@ -28,25 +29,40 @@ namespace TrashCollector.Controllers
                 return HttpNotFound();
             }
             //get all the users
-            var users = db.Users;
-            return View(users.ToList());
+            var users = db.Users.ToList();
+            //get all the user roles
+            var roles = GetRolesFromUsers(users);
+
+            //create the view model
+            var viewModel = new IndexUserViewModel()
+            {
+                Users = users.ToArray(),
+                UserRoles = roles.ToArray()
+            };
+
+            return View(viewModel);
         }
 
-        public class UserRole
+        IEnumerable<Role> GetRolesFromUsers(IEnumerable<ApplicationUser> users)
         {
-            public string UserId { get; set; }
-            public string RoleId { get; set; }
-        }
-
-        public class Role
-        {
-            public string Id { get; set; }
-            public string Name { get; set; }
+            List<Role> userRoles = new List<Role>();
+            foreach(var user in users)
+            {
+                var userRole = GetUserRole(user.Id);
+                Role role = GetRole(userRole);
+                userRoles.Add(role);
+            }
+            return userRoles;
         }
 
         // GET: User/Edit/Id
         public ActionResult Edit(string userId)
         {
+            if ( userId == null || userId == "" )
+            {
+                return HttpNotFound();
+            }
+
             if (!User.Identity.IsAuthenticated)
             {
                 return RedirectToAction("Login", "Account");
@@ -55,9 +71,9 @@ namespace TrashCollector.Controllers
             {
                 return HttpNotFound();
             }
-            var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
-            var user = UserManager.FindById(userId);
-            //var userRoles = db.Database.SqlQuery(,);
+            var user = db.Users
+                .Include(u => u.Profile)
+                .First(u => u.Id == userId);
             var userRole = GetUserRole(user.Id);
             var role = GetRole(userRole);
             var viewModel = new EditUserViewModel
@@ -93,21 +109,39 @@ namespace TrashCollector.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //public ActionResult Edit([Bind(Include = "Email,UserName")] ApplicationUser user)
-        public ActionResult Edit(string userId, string userName, string email, string userRole)
+        public ActionResult Edit(string userId, string userName, string email, string userRole, string zipCodes)
         {
-            var UserManager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(db));
-            var user = UserManager.FindById(userId);
+            zipCodes = zipCodes.Replace(" ", String.Empty);
+            
+            //save user info
+            var userToUpdate = db.Users
+                .Include(u => u.Profile)
+                .First(u => u.Id == userId);
             if (ModelState.IsValid)
             {
-                user.UserName = userName;
-                user.Email = email;
+                userToUpdate.UserName = userName;
+                userToUpdate.Email = email;
                 db.SaveChanges();
             }
+            
+            //save role info
             UserRole role = GetUserRole(userId);
             string roleId = GetRoleId(userRole);
             role.RoleId = roleId;
             string command = "UPDATE dbo.AspNetUserRoles SET RoleId = '" + roleId + "' WHERE UserId = '" + role.UserId + "'";
             db.Database.ExecuteSqlCommand(command);
+
+            //save profile info
+            int profileId = Convert.ToInt32(userToUpdate.Profile.ProfileId);
+            var profile = db.Profiles.First(p => p.ProfileId == profileId);
+            if (zipCodes != "")
+            {
+                profile.ZipCodes = zipCodes;
+            }
+            db.SaveChanges();
+
+
+
             //ViewBag.CityId = new SelectList(db.Cities, "CityId", "Name", address.CityId);
             //ViewBag.StateId = new SelectList(db.States, "StateId", "Name", address.StateId);
             //ViewBag.ZipCodeId = new SelectList(db.ZipCodes, "ZipCodeId", "Number", address.ZipCodeId);

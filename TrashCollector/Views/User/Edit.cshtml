@@ -34,15 +34,23 @@
             <div class="col-md-10" id="userRoles">
                 <div class="radio">
                     <label>
-                        <input type="radio" name="userRole" value="Customer">Customer
+                        <input type="radio" name="userRole" id="Customer" value="Customer">Customer
                     </label>
                 </div>
 
                 <div class="radio">
                     <label>
-                        <input type="radio" name="userRole" value="Employee">Employee
+                        <input type="radio" name="userRole" id="Employee" value="Employee">Employee
                     </label>
                 </div>
+            </div>
+        </div>
+
+        <div class="form-group" id="employeeZipCodes" style="display: none;">
+            <label class="control-label col-md-2">Employee Zip Codes</label>
+            <div class="col-md-10">
+                <input class="form-control text-box single-line" name="zipCodes" id="zipCodes" type="text" value="@Model.User.Profile.ZipCodes">
+<span class="help-block">These are the zip codes that an employee's route will cover<br />Enter a comma-seperated list of zip codes (i.e. '53202,53213')</span>
             </div>
         </div>
 
@@ -62,5 +70,24 @@
                 $(this).attr('checked', 'checked');
             }
         });
+
+        if ( $('#Employee').is(':checked') ) {
+            $('#employeeZipCodes').show();
+        }
+
+        $('#Employee').click(function () {
+            $('#employeeZipCodes').fadeIn();
+        });
+
+        $('#Customer').click(function () {
+            $('#employeeZipCodes').fadeOut();
+        });
+
+        @*let employeeZipcodes = @Model.User.Profile.ZipCodes;
+        if (!(employeeZipcodes === ""))
+        {
+            $("#zipCodes").val(employeeZipcodes);
+        }*@
+
     </script>
 }

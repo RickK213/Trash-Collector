@@ -45,7 +45,7 @@ namespace TrashCollector.Controllers
             else if (User.IsInRole("Employee"))
             {
                 //change this!
-                return RedirectToAction("Index", "User");
+                return RedirectToAction("Index", "Pickup");
             }
             else
             {

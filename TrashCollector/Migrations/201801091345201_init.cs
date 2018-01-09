@@ -87,6 +87,7 @@ namespace TrashCollector.Migrations
                 c => new
                     {
                         ProfileId = c.Int(nullable: false, identity: true),
+                        ZipCodes = c.String(),
                     })
                 .PrimaryKey(t => t.ProfileId);
             
