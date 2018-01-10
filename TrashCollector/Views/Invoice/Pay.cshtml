@@ -1,0 +1,19 @@
+﻿@model TrashCollector.Models.Invoice
+@{
+    ViewBag.Title = "Pay Invoice";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 style="margin-top: 40px;">Pay Invoice #@String.Format("{0:C2}", Model.InvoiceId.ToString())</h2>
+<div class="row">
+    <div class="col-md-12">
+        <h4><strong>Amount Due: </strong>@String.Format("{0:C2}", Model.AmountDue)</h4>
+        <h4><strong>Due Date: </strong>@String.Format("{0:M/d/yyyy}", Model.DueDate)</h4>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <a href="#" class="btn btn-lg btn-primary">Pay @String.Format("{0:C2}", Model.AmountDue)</a>
+    </div>
+</div>

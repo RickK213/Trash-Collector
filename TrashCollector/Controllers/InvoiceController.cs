@@ -177,5 +177,11 @@ namespace TrashCollector.Controllers
             return RedirectToAction("Index", "Invoice");
         }
 
+        public ActionResult Pay(int invoiceId)
+        {
+            var invoice = db.Invoices.Where(i => i.InvoiceId == invoiceId).FirstOrDefault();
+            return View(invoice);
+        }
+
     }
 }

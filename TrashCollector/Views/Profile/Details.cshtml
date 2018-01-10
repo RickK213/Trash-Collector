@@ -31,7 +31,9 @@
                 <td>@String.Format("{0:M/d/yyyy}", invoice.DueDate)</td>
                 <td>@invoice.Pickups.Count</td>
                 <td>@String.Format("{0:C2}", invoice.AmountDue)</td>
-                <td>Pay Invoice</td>
+                <td>
+                    @Html.ActionLink("Pay Invoice", "Pay", "Invoice", routeValues: new { invoiceId = invoice.InvoiceId }, htmlAttributes: new { title = "Pay Invoice", @class = "btn btn-success btn-xs" })
+                </td>
             </tr>
 
         }
