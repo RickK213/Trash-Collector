@@ -53,12 +53,31 @@ namespace TrashCollector.Controllers
             }
             else if (User.IsInRole("Employee"))
             {
-                //change this!
                 return RedirectToAction("Pickups", "Profile", new { todayOnly = true });
             }
             else
             {
-                return View();
+                //This is the customer role view. Not a great structure. Should re-do this.
+                //get list of invoices that the user owns that are unpaid. Calculate total amount due.
+                var userId = User.Identity.GetUserId();
+                var invoices = db.Invoices
+                    .Include(i => i.Pickups)
+                    .Where(i => i.UserId == userId)
+                    .Where(i => i.IsPaid == false)
+                    .ToList();
+
+                double totalAmountDue = 0d;
+                foreach (Invoice invoice in invoices)
+                {
+                    totalAmountDue += invoice.AmountDue;
+                }
+                //create a view model
+                //populate it with the list of invoices and total amount due. Unless you want to get cray and put that logic in the view.
+                var viewModel = new ProfileDetailsViewModel();
+                viewModel.Invoices = invoices;
+                viewModel.AmountDue = totalAmountDue;
+
+                return View(viewModel);
             }
         }
 
