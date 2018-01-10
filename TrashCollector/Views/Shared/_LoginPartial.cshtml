@@ -13,7 +13,7 @@
             }
             else if(User.IsInRole("Employee"))
             {
-                @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Pickups", "Profile", routeValues: null, htmlAttributes: new { title = "Profile" });
+                @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Pickups", "Profile", routeValues: new { todayOnly = true }, htmlAttributes: new { title = "Profile" });
             }
             else
             {

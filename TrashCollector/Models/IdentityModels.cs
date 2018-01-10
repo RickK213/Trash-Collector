@@ -42,6 +42,10 @@ namespace TrashCollector.Models
 
         public System.Data.Entity.DbSet<TrashCollector.Models.Profile> Profiles { get; set; }
 
+        public System.Data.Entity.DbSet<TrashCollector.Models.Invoice> Invoices { get; set; }
+
+        public System.Data.Entity.DbSet<TrashCollector.Models.Pickup> Pickups { get; set; }
+
         public System.Data.Entity.DbSet<TrashCollector.Models.Address> Addresses { get; set; }
 
         public System.Data.Entity.DbSet<TrashCollector.Models.TrashCollection> TrashCollections { get; set; }
@@ -52,7 +56,6 @@ namespace TrashCollector.Models
 
         public System.Data.Entity.DbSet<TrashCollector.Models.ZipCode> ZipCodes { get; set; }
 
-        public System.Data.Entity.DbSet<TrashCollector.Models.Invoice> Invoices { get; set; }
     }
 
 }

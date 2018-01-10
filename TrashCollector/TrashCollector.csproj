@@ -202,6 +202,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InvoiceController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
+    <Compile Include="Controllers\PickupController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Controllers\RoleController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -209,9 +210,9 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\201801091412521_init.cs" />
-    <Compile Include="Migrations\201801091412521_init.Designer.cs">
-      <DependentUpon>201801091412521_init.cs</DependentUpon>
+    <Compile Include="Migrations\201801100506005_init.cs" />
+    <Compile Include="Migrations\201801100506005_init.Designer.cs">
+      <DependentUpon>201801100506005_init.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
@@ -250,8 +251,8 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <EmbeddedResource Include="Domain\SeedData\states.csv" />
-    <EmbeddedResource Include="Migrations\201801091412521_init.resx">
-      <DependentUpon>201801091412521_init.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\201801100506005_init.resx">
+      <DependentUpon>201801100506005_init.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -327,13 +328,13 @@
     <Content Include="Views\Profile\Addresses.cshtml" />
     <Content Include="Views\Address\DuplicateAddress.cshtml" />
     <Content Include="Views\Address\ScheduleCollection.cshtml" />
+    <Content Include="Views\User\Edit.cshtml" />
+    <Content Include="Views\Profile\Pickups.cshtml" />
     <Content Include="Views\Invoice\Create.cshtml" />
     <Content Include="Views\Invoice\Delete.cshtml" />
     <Content Include="Views\Invoice\Details.cshtml" />
     <Content Include="Views\Invoice\Edit.cshtml" />
     <Content Include="Views\Invoice\Index.cshtml" />
-    <Content Include="Views\User\Edit.cshtml" />
-    <Content Include="Views\Profile\Pickups.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

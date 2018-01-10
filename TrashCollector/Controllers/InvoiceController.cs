@@ -46,7 +46,7 @@ namespace TrashCollector.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "InvoiceId,UserId")] Invoice invoice)
+        public ActionResult Create([Bind(Include = "InvoiceId,UserId,AmountDue,IsPaid")] Invoice invoice)
         {
             if (ModelState.IsValid)
             {
@@ -78,7 +78,7 @@ namespace TrashCollector.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "InvoiceId,UserId")] Invoice invoice)
+        public ActionResult Edit([Bind(Include = "InvoiceId,UserId,AmountDue,IsPaid")] Invoice invoice)
         {
             if (ModelState.IsValid)
             {
@@ -123,5 +123,59 @@ namespace TrashCollector.Controllers
             }
             base.Dispose(disposing);
         }
+
+        public ActionResult Generate()
+        {
+            //Rick - stubbing this out saved you a ton of time. Do it more often.
+            //get all of the users
+            //foreach user
+                //get all of their addresses, including trash collections and pickups that are not invoiced
+                //if they have un-invoiced pickups
+                //create a new invoice
+                //foreach of the users pickups
+                    //add it to the invoice
+                //save the invoice
+
+            var users = db.Users
+                .Include(u => u.Profile)
+                .Include(u => u.Profile.Addresses)
+                .ToList();
+
+            foreach (ApplicationUser user in users)
+            {
+                var trashCollections = db.TrashCollections
+                    .Include(t => t.Pickups)
+                    .ToList();
+
+                List<Pickup> pickups = new List<Pickup>();
+                foreach (TrashCollection trashCollection in trashCollections)
+                {
+                    pickups = db.Pickups
+                        .Where(p => p.IsInvoiced == false)
+                        .ToList();
+                }
+                if ( pickups.Count > 0 )
+                {
+                    Invoice invoice = new Invoice();
+                    invoice.UserId = user.Id;
+                    invoice.Pickups = new List<Pickup>();
+                    invoice.IsPaid = false;
+                    invoice.AmountDue = 0;
+                    invoice.DateCreated = DateTime.Now;
+                    invoice.DueDate = DateTime.Now.AddDays(30);
+                    foreach (Pickup pickup in pickups)
+                    {
+                        pickup.IsInvoiced = true;
+                        invoice.Pickups.Add(pickup);
+                        invoice.AmountDue += pickup.Price;
+                    }
+                    db.Invoices.Add(invoice);
+                    db.SaveChanges();
+                }
+            }
+
+            return RedirectToAction("Index", "Invoice");
+        }
+
     }
 }

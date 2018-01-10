@@ -21,6 +21,11 @@ namespace TrashCollector.Controllers
         // GET: Profile
         public ActionResult Index()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             int profileId = Convert.ToInt32(User.Identity.GetProfileId());
             //var userProfile = db.Profiles.Include(p => p.Addresses).Include(p => p.TrashCollections).First(p => p.ProfileId == profileId);
             var userProfile = db.Profiles
@@ -36,6 +41,11 @@ namespace TrashCollector.Controllers
         // GET: Profile/Details
         public ActionResult Details()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             //This is where the user's account information will go.
             if (User.IsInRole("Admin"))
             {
@@ -44,7 +54,7 @@ namespace TrashCollector.Controllers
             else if (User.IsInRole("Employee"))
             {
                 //change this!
-                return RedirectToAction("Pickups", "Profile");
+                return RedirectToAction("Pickups", "Profile", new { todayOnly = true });
             }
             else
             {
@@ -77,86 +87,6 @@ namespace TrashCollector.Controllers
             return View(userProfile);
         }
 
-        // GET: Profile/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: Profile/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ProfileId")] Profile profile)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Profiles.Add(profile);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-
-            return View(profile);
-        }
-
-        // GET: Profile/Edit/5
-        public ActionResult Edit(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Profile profile = db.Profiles.Find(id);
-            if (profile == null)
-            {
-                return HttpNotFound();
-            }
-            return View(profile);
-        }
-
-        // POST: Profile/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ProfileId")] Profile profile)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Entry(profile).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            return View(profile);
-        }
-
-        // GET: Profile/Delete/5
-        public ActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Profile profile = db.Profiles.Find(id);
-            if (profile == null)
-            {
-                return HttpNotFound();
-            }
-            return View(profile);
-        }
-
-        // POST: Profile/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-            Profile profile = db.Profiles.Find(id);
-            db.Profiles.Remove(profile);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
-
         protected override void Dispose(bool disposing)
         {
             if (disposing)
@@ -166,8 +96,13 @@ namespace TrashCollector.Controllers
             base.Dispose(disposing);
         }
 
-        public ActionResult Pickups()
+        public ActionResult Pickups(bool? todayOnly)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             if (User.IsInRole("Customer"))
             {
                 return HttpNotFound();
@@ -179,16 +114,38 @@ namespace TrashCollector.Controllers
 
             string[] employeeZipcodes = profile.ZipCodes.Split(Convert.ToChar(","));
 
-            var addresses = db.Addresses
-                .Include(a => a.TrashCollection)
-                .Where( a => employeeZipcodes.Contains(a.ZipCode.Number) )
-                .Where( a => a.TrashCollection.StartDate <= DateTime.Now )
-                .ToList();
+            List<Address> addresses;
+            if ( todayOnly.HasValue && (bool)todayOnly )
+            {
+                string dayOfWeek = DateTime.Now.DayOfWeek.ToString();
+                addresses = db.Addresses
+                    .Include(a => a.TrashCollection)
+                    .Include(a => a.TrashCollection.Pickups)
+                    .Include(a => a.City)
+                    .Include(a => a.State)
+                    .Include(a => a.ZipCode)
+                    .Where(a => employeeZipcodes.Contains(a.ZipCode.Number))
+                    .Where(a => a.TrashCollection.PickUpDay == dayOfWeek)
+                    .Where(a => a.TrashCollection.StartDate <= DateTime.Now)
+                    .ToList();
+            }
+            else
+            {
+                addresses = db.Addresses
+                    .Include(a => a.TrashCollection)
+                    .Include(a => a.TrashCollection.Pickups)
+                    .Include(a => a.City)
+                    .Include(a => a.State)
+                    .Include(a => a.ZipCode)
+                    .Where(a => employeeZipcodes.Contains(a.ZipCode.Number))
+                    .Where(a => a.TrashCollection.StartDate <= DateTime.Now)
+                    .ToList();
+            }
 
             //remove addresses from the list where the customer is on vacay
             for (int i=0; i<addresses.Count; i++)
             {
-                if (addresses[i].TrashCollection.VacationStartDate != null)
+                if (addresses[i].TrashCollection.VacationStartDate.HasValue && addresses[i].TrashCollection.VacationEndDate.HasValue)
                 {
                     DateTime vacationStart = (DateTime)addresses[i].TrashCollection.VacationStartDate;
                     DateTime vacationEnd = (DateTime)addresses[i].TrashCollection.VacationEndDate;

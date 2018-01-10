@@ -8,7 +8,7 @@
         {
             <ul class="nav nav-tabs">
                 <li role="presentation">@Html.ActionLink("Users", "Index", "User")</li>
-                <li role="presentation">@Html.ActionLink("Invoices", "Index", "Invoices")</li>
+                <li role="presentation">@Html.ActionLink("Invoices", "Index", "Invoice")</li>
             </ul>
         }
         else if (User.IsInRole("Customer"))
@@ -22,7 +22,8 @@
         else if (User.IsInRole("Employee"))
         {
             <ul class="nav nav-tabs">
-                <li role="presentation">@Html.ActionLink("Pickups", "Pickups", "Profile")</li>
+                <li role="presentation">@Html.ActionLink("Today's Pickups", "Pickups", "Profile", routeValues: new { todayOnly = true }, htmlAttributes: null)</li>
+                <li role="presentation">@Html.ActionLink("All Pickups", "Pickups", "Profile")</li>
                 <li role="presentation">@Html.ActionLink("Pickup History", "PickupHistory", "Profile")</li>
             </ul>
         }

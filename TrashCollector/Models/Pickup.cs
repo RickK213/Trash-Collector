@@ -10,7 +10,6 @@ namespace TrashCollector.Models
         public int PickupId { get; set; }
         public bool IsInvoiced { get; set; }
         public DateTime DateCompleted { get; set; }
-        public Address Address { get; set; }
-        public int AddressId { get; set; }
+        public double Price { get; set; }
     }
 }

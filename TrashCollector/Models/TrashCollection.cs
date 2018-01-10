@@ -12,5 +12,6 @@ namespace TrashCollector.Models
         public DateTime? StartDate { get; set; }
         public DateTime? VacationStartDate { get; set; }
         public DateTime? VacationEndDate { get; set; }
+        public ICollection<Pickup> Pickups { get; set; }
     }
 }

@@ -34,7 +34,9 @@ namespace TrashCollector
                       "~/Scripts/respond.js"));
 
             bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
+                      "~/Content/bootstrap.min-flatly.css",
+                      //"~/Content/bootstrap.min-united.css",
+                      //"~/Content/bootstrap.css",
                       "~/Content/bootstrap-datetimepicker.css",
                       "~/Content/site.css"));
 

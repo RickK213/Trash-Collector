@@ -1,5 +1,7 @@
 namespace TrashCollector.Migrations
 {
+    using Microsoft.AspNet.Identity;
+    using Microsoft.AspNet.Identity.EntityFramework;
     using Microsoft.VisualBasic.FileIO;
     using System;
     using System.Collections.Generic;
@@ -21,6 +23,7 @@ namespace TrashCollector.Migrations
 
         protected override void Seed(TrashCollector.Models.ApplicationDbContext context)
         {
+            //Seed States table with all US States
             bool fileExists = File.Exists(filePath);
             if (fileExists)
             {
@@ -45,7 +48,41 @@ namespace TrashCollector.Migrations
                     }
                 }
                 context.States.AddOrUpdate(c => c.Abbreviation, states.ToArray());
+
+                //Seed users
+                //var passwordHash = new PasswordHasher();
+                //string password = passwordHash.HashPassword("Password123!");
+                //context.Users.AddOrUpdate(u => u.UserName,
+                //    new ApplicationUser
+                //    {
+                //        UserName = "Aaron@rk-trash.com",
+                //        PasswordHash = password,
+                //        PhoneNumber = "414123456"
+
+                //    });
+
+                //context.Users.AddOrUpdate(u => u.UserName,
+                //    new ApplicationUser
+                //    {
+                //        UserName = "Bob@rk-trash.com",
+                //        PasswordHash = password,
+                //        PhoneNumber = "414123456"
+
+                //    });
+
+                //if (!context.Users.Any(u => u.UserName == "StarbucksGuy"))
+                //{
+                //    var store = new UserStore<ApplicationUser>(context);
+                //    var manager = new UserManager<ApplicationUser>(store);
+                //    var user = new ApplicationUser { UserName = "StarbucksGuy" };
+
+                //    manager.Create(user, "Password123!");
+                //    manager.AddToRole(user.Id, "Employee");
+                //}
             }
+
+
+
 
             //Assembly assembly = Assembly.GetExecutingAssembly();
             //string resourceName = "TrashCollector.Domain.SeedData.states.csv";

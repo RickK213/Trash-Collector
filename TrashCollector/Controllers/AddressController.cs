@@ -20,6 +20,11 @@ namespace TrashCollector.Controllers
         // GET: Address
         public ActionResult Index()
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             var addresses = db.Addresses.Include(a => a.City).Include(a => a.State).Include(a => a.ZipCode);
             return View(addresses.ToList());
         }
@@ -27,6 +32,11 @@ namespace TrashCollector.Controllers
         // GET: Address/Details/5
         public ActionResult Details(int? id)
         {
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
