@@ -183,5 +183,15 @@ namespace TrashCollector.Controllers
             return View(invoice);
         }
 
+        public ActionResult MarkPaid(int invoiceId)
+        {
+            var invoice = db.Invoices.Where(i => i.InvoiceId == invoiceId).FirstOrDefault();
+            invoice.IsPaid = true;
+            invoice.AmountDue = 0;
+            db.SaveChanges();
+
+            return RedirectToAction("Index", "Invoice");
+        }
+
     }
 }

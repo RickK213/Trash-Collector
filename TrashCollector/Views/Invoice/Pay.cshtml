@@ -14,6 +14,28 @@
 
 <div class="row">
     <div class="col-md-12">
-        <a href="#" class="btn btn-lg btn-primary">Pay @String.Format("{0:C2}", Model.AmountDue)</a>
-    </div>
+        <form name="_xclick" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+            <input type="hidden" name="cmd" value="_xclick">
+            <input type="hidden" name="business" value="seller_1361208199_biz@att.net">
+            <input type="hidden" name="currency_code" value="USD">
+            <input type="hidden" name="item_name" value="Payment for RK Trash Collection Invoice #@Model.InvoiceId">
+            <input type="hidden" name="amount" value="@Model.AmountDue">
+            @{ 
+                string absUrl = Url.Action("MarkPaid", "Invoice", new { invoiceId = Model.InvoiceId}, Request.Url.Scheme);
+            }
+            <input type="hidden" name="return" value="@absUrl">
+            <input type="submit"  class="btn btn-primary" name="submit" value="Pay via PayPal" />
+        </form>
+
+        <FORM action="https://www.paypal.com/cgi-bin/webscr" method="post">
+
+
+
+
+
 </div>
+</div>
+
+@section Scripts{
+
+}
