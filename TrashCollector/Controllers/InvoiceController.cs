@@ -143,18 +143,22 @@ namespace TrashCollector.Controllers
 
             foreach (ApplicationUser user in users)
             {
-                var trashCollections = db.TrashCollections
-                    .Include(t => t.Pickups)
-                    .ToList();
-
-                List<Pickup> pickups = new List<Pickup>();
-                foreach (TrashCollection trashCollection in trashCollections)
+                List<Pickup> unInvoicedPickups = new List<Pickup>();
+                foreach (Address address in user.Profile.Addresses)
                 {
-                    pickups = db.Pickups
-                        .Where(p => p.IsInvoiced == false)
-                        .ToList();
+                    var trashCollection = GetTrashCollection(address);
+                    if (trashCollection.Pickups !=null)
+                    {
+                        foreach (Pickup pickup in address.TrashCollection.Pickups)
+                        {
+                            if (!pickup.IsInvoiced)
+                            {
+                                unInvoicedPickups.Add(pickup);
+                            }
+                        }
+                    }
                 }
-                if ( pickups.Count > 0 )
+                if (unInvoicedPickups.Count > 0)
                 {
                     Invoice invoice = new Invoice();
                     invoice.UserId = user.Id;
@@ -163,7 +167,7 @@ namespace TrashCollector.Controllers
                     invoice.AmountDue = 0;
                     invoice.DateCreated = DateTime.Now;
                     invoice.DueDate = DateTime.Now.AddDays(30);
-                    foreach (Pickup pickup in pickups)
+                    foreach (Pickup pickup in unInvoicedPickups)
                     {
                         pickup.IsInvoiced = true;
                         invoice.Pickups.Add(pickup);
@@ -172,6 +176,35 @@ namespace TrashCollector.Controllers
                     db.Invoices.Add(invoice);
                     db.SaveChanges();
                 }
+                //var trashCollections = db.TrashCollections
+                //    .Include(t => t.Pickups)
+                //    .ToList();
+
+                //List<Pickup> pickups = new List<Pickup>();
+                //foreach (TrashCollection trashCollection in trashCollections)
+                //{
+                //    pickups = db.Pickups
+                //        .Where(p => p.IsInvoiced == false)
+                //        .ToList();
+                //}
+                //if ( pickups.Count > 0 )
+                //{
+                //    Invoice invoice = new Invoice();
+                //    invoice.UserId = user.Id;
+                //    invoice.Pickups = new List<Pickup>();
+                //    invoice.IsPaid = false;
+                //    invoice.AmountDue = 0;
+                //    invoice.DateCreated = DateTime.Now;
+                //    invoice.DueDate = DateTime.Now.AddDays(30);
+                //    foreach (Pickup pickup in pickups)
+                //    {
+                //        pickup.IsInvoiced = true;
+                //        invoice.Pickups.Add(pickup);
+                //        invoice.AmountDue += pickup.Price;
+                //    }
+                //    db.Invoices.Add(invoice);
+                //    db.SaveChanges();
+                //}
             }
 
             return RedirectToAction("Index", "Invoice");
@@ -191,6 +224,12 @@ namespace TrashCollector.Controllers
             db.SaveChanges();
 
             return RedirectToAction("Index", "Invoice");
+        }
+
+        TrashCollection GetTrashCollection(Address address)
+        {
+            var trashCollection = db.TrashCollections.Include(t => t.Pickups).Where(t => t.TrashCollectionId == address.TrashCollectionId).FirstOrDefault();
+            return trashCollection;
         }
 
     }

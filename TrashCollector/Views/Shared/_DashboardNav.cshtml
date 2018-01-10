@@ -16,7 +16,7 @@
             <ul class="nav nav-tabs">
                 <li role="presentation">@Html.ActionLink("Account", "Details", "Profile")</li>
                 <li role="presentation">@Html.ActionLink("My Addresses", "Addresses", "Profile")</li>
-                <li role="presentation">@Html.ActionLink("Transaction History", "Transactions", "Profile")</li>
+                @*<li role="presentation">@Html.ActionLink("Transaction History", "Transactions", "Profile")</li>*@
             </ul>
         }
         else if (User.IsInRole("Employee"))
