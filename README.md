@@ -1,6 +1,6 @@
 <h1>Welcome to RK Trash Collection</h1>
 <h3><em>Don't litter, it makes the world bitter!</em></h3>
-<p>RK Trash Collection disrupts the way your garbage is picked up! This web app allows customers to set their pickup preferences, view account info and pay online. Trash collectors can view their route, mark their pickups and bill their customers. This was my first ASP.NET project for devCodeCamp. I completed this in less than a week and received a grade of 117%. RK Trash Collection integrates 2 APIs:</p>
+<p>RK Trash Collection disrupts the way your garbage is picked up! This web app allows customers to set their pickup preferences, view account info and pay online. Trash collectors can view their route, mark their pickups and bill their customers. This was my first ASP.NET/Entity Framework project for devCodeCamp. I completed this in less than a week and received a grade of 117%. RK Trash Collection integrates 2 APIs:</p>
 <ul>
 	<li><strong>Google Maps API</strong> &mdash; <em>for geolocating addresses and displaying maps</em></li>
 	<li><strong>PayPal API</strong> &mdash; <em>for processing transactions</em></li>
